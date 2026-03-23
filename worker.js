@@ -53,37 +53,32 @@ function corsHeaders(origin) {
  * Parse ALL Brisbane TGP prices from the AIP TGP table.
  * Returns an array of { date, price } objects (most recent last),
  * or empty array on failure. Prices in cents/L.
+ *
+ * Actual HTML structure (as returned to Cloudflare Workers):
+ *   <th ...><a class="table" href="...brisbaneUlp" ...>Brisbane</a></th>
+ *   <td>224.5</td>
+ *   <td>230.1</td>
+ *   ...
  */
 function parseTGPPrices(html) {
   const results = [];
 
-  // Extract the header row dates
-  // Pattern: <th>... Day DD Month YYYY ...</th>
-  const dateMatches = [...html.matchAll(
-    /(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\s+(\d{1,2}\s+\w+\s+\d{4})/gi
-  )];
-
-  // Find the Petrol (ULP) section — it's the first table
-  // Brisbane row pattern: brisbaneUlp link followed by price cells
+  // Find Brisbane row: <th> with brisbaneUlp link, followed by <td> price cells
+  // The </th> closes the label, then <td>price</td> cells follow until </tr>
   const brisbaneMatch = html.match(
-    /brisbaneUlp[^<]*<\/a>\s*<\/td>([\s\S]*?)<\/tr>/i
+    /brisbaneUlp[\s\S]*?<\/th>([\s\S]*?)<\/tr>/i
   );
   if (!brisbaneMatch) return results;
 
+  // Extract all <td>NUMBER</td> cells from the matched row
   const priceCells = [...brisbaneMatch[1].matchAll(
-    /<td[^>]*>\s*([\d.]+|n\.a\.|-)\s*<\/td>/gi
+    /<td[^>]*>\s*([\d.]+)\s*<\/td>/gi
   )];
 
-  for (let i = 0; i < priceCells.length; i++) {
-    const raw = priceCells[i][1];
-    if (raw === 'n.a.' || raw === '-') continue;
-
-    const price = parseFloat(raw);
+  for (const cell of priceCells) {
+    const price = parseFloat(cell[1]);
     if (price > 100 && price < 400) {
-      const dateStr = dateMatches[i]
-        ? dateMatches[i][1]
-        : `Day ${i + 1}`;
-      results.push({ date: dateStr, price });
+      results.push({ date: `Day ${results.length + 1}`, price });
     }
   }
 
@@ -96,7 +91,7 @@ function parseTGPPrices(html) {
  */
 function parseRetailPrice(html) {
   const match = html.match(
-    /Brisbane<\/a>\s*<\/td>\s*<td[^>]*>\s*([\d.]+)\s*<\/td>/i
+    /Brisbane<\/a>\s*<\/t[hd]>\s*<td[^>]*>\s*([\d.]+)\s*<\/td>/i
   );
   if (match) {
     const price = parseFloat(match[1]);
@@ -117,42 +112,83 @@ export default {
     }
 
     try {
-      // ── Check cache ──
+      // ── Check cache (skip with ?nocache) ──
+      const url = new URL(request.url);
+      const skipCache = url.searchParams.has('nocache');
       const cache = caches.default;
-      const cacheKey = new Request('https://cache.internal/fuel-price/brisbane/u91/v3-daily');
-      const cached = await cache.match(cacheKey);
+      const cacheKey = new Request('https://cache.internal/fuel-price/brisbane/u91/v9');
 
-      if (cached) {
-        const body = await cached.text();
-        return new Response(body, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Cache-Control': `public, max-age=${CACHE_TTL}`,
-            ...corsHeaders(origin),
-          },
-        });
+      if (!skipCache) {
+        const cached = await cache.match(cacheKey);
+        if (cached) {
+          const body = await cached.text();
+          return new Response(body, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Cache-Control': 'no-store',
+              ...corsHeaders(origin),
+            },
+          });
+        }
       }
 
       // ── Fetch both sources in parallel ──
-      const [tgpResp, retailResp] = await Promise.allSettled([
-        fetch('http://api.aip.com.au/public/tgpTables', {
-          headers: { 'User-Agent': 'FuelRealityCheck/1.0' },
-        }),
-        fetch('http://api.aip.com.au/public/qldUlpTable', {
-          headers: { 'User-Agent': 'FuelRealityCheck/1.0' },
-        }),
-      ]);
+      // Try TGP with both http and https (AIP may redirect)
+      const tgpUrls = [
+        'http://api.aip.com.au/public/tgpTables',
+        'https://api.aip.com.au/public/tgpTables',
+        'http://www.aip.com.au/pricing/terminal-gate-prices',
+      ];
+
+      const retailResp = await fetch('http://api.aip.com.au/public/qldUlpTable', {
+        headers: { 'User-Agent': 'FuelRealityCheck/1.0' },
+      }).catch(() => null);
 
       let tgpPrices = [];
-      let retailPrice = null;
+      let tgpError = null;
+      let tgpDebugAll = [];
 
-      if (tgpResp.status === 'fulfilled' && tgpResp.value.ok) {
-        const html = await tgpResp.value.text();
-        tgpPrices = parseTGPPrices(html);
+      for (const url of tgpUrls) {
+        try {
+          const resp = await fetch(url, {
+            headers: { 'User-Agent': 'FuelRealityCheck/1.0' },
+            redirect: 'follow',
+          });
+          const finalUrl = resp.url || url;
+          const status = resp.status;
+          
+          if (resp.ok) {
+            const html = await resp.text();
+            const hasBrisbane = html.includes('brisbaneUlp');
+            const hasTGP = html.includes('Terminal Gate');
+            tgpPrices = parseTGPPrices(html);
+            
+            tgpDebugAll.push({
+              url,
+              finalUrl,
+              status,
+              bytes: html.length,
+              hasBrisbane,
+              hasTGP,
+              pricesFound: tgpPrices.length,
+              snippet: html.substring(0, 500),
+              brisbaneContext: hasBrisbane 
+                ? html.substring(Math.max(0, html.indexOf('brisbaneUlp') - 100), html.indexOf('brisbaneUlp') + 500)
+                : null,
+            });
+            
+            if (tgpPrices.length > 0) break;
+          } else {
+            tgpDebugAll.push({ url, finalUrl, status, error: 'not ok' });
+          }
+        } catch (e) {
+          tgpDebugAll.push({ url, error: e.message });
+        }
       }
 
-      if (retailResp.status === 'fulfilled' && retailResp.value.ok) {
-        const html = await retailResp.value.text();
+      let retailPrice = null;
+      if (retailResp && retailResp.ok) {
+        const html = await retailResp.text();
         retailPrice = parseRetailPrice(html);
       }
 
@@ -211,12 +247,13 @@ export default {
           offset,
         },
         tgp_history: tgpPrices,
+        tgp_debug: tgpDebugAll,
         fetched_at: new Date().toISOString(),
       };
 
       const body = JSON.stringify(responseData);
 
-      // ── Cache ──
+      // ── Cache (Worker Cache API only — not edge) ──
       ctx.waitUntil(cache.put(cacheKey, new Response(body, {
         headers: {
           'Content-Type': 'application/json',
@@ -227,7 +264,7 @@ export default {
       return new Response(body, {
         headers: {
           'Content-Type': 'application/json',
-          'Cache-Control': `public, max-age=${CACHE_TTL}`,
+          'Cache-Control': 'no-store',
           ...corsHeaders(origin),
         },
       });
