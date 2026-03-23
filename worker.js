@@ -34,15 +34,15 @@ const FALLBACK_PRICE = 235;   // cents/L fallback — update occasionally
 const ALLOWED_ORIGINS = [
   'https://fuelrealitycheck.com.au',
   'https://www.fuelrealitycheck.com.au',
+  'https://fuel-reality-check.pages.dev',
   'http://localhost:3000',
   'http://127.0.0.1:5500',
   'null',
 ];
 
 function corsHeaders(origin) {
-  const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : '*';
   return {
-    'Access-Control-Allow-Origin': allowed,
+    'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Max-Age': '86400',
@@ -112,32 +112,13 @@ export default {
     }
 
     try {
-      // ── Check cache (skip with ?nocache) ──
-      const url = new URL(request.url);
-      const skipCache = url.searchParams.has('nocache');
-      const cache = caches.default;
-      const cacheKey = new Request('https://cache.internal/fuel-price/brisbane/u91/v9');
+      // ── No caching — fetch fresh from AIP each request ──
+      // AIP pages are small (~24KB) and we're on Cloudflare's free tier
+      // (100k req/day). Simpler and avoids all cache-busting headaches.
 
-      if (!skipCache) {
-        const cached = await cache.match(cacheKey);
-        if (cached) {
-          const body = await cached.text();
-          return new Response(body, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Cache-Control': 'no-store',
-              ...corsHeaders(origin),
-            },
-          });
-        }
-      }
-
-      // ── Fetch both sources in parallel ──
-      // Try TGP with both http and https (AIP may redirect)
+      // Try TGP with http (https returns 526 from AIP)
       const tgpUrls = [
         'http://api.aip.com.au/public/tgpTables',
-        'https://api.aip.com.au/public/tgpTables',
-        'http://www.aip.com.au/pricing/terminal-gate-prices',
       ];
 
       const retailResp = await fetch('http://api.aip.com.au/public/qldUlpTable', {
@@ -252,14 +233,6 @@ export default {
       };
 
       const body = JSON.stringify(responseData);
-
-      // ── Cache (Worker Cache API only — not edge) ──
-      ctx.waitUntil(cache.put(cacheKey, new Response(body, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Cache-Control': `public, max-age=${CACHE_TTL}`,
-        },
-      })));
 
       return new Response(body, {
         headers: {
