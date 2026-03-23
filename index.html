@@ -507,7 +507,7 @@
 // ================================================================
 
 // Your Cloudflare Worker URL — update after deploying
-const WORKER_URL = 'https://fuel-price-worker.matthew-edward-burgess.workers.dev/';  // e.g. 'https://fuel-price-worker.you.workers.dev'
+const WORKER_URL = '';  // e.g. 'https://fuel-price-worker.you.workers.dev'
 
 // Fallback if API is unavailable (update manually as needed)
 // Current real data: Brisbane ~239c/L estimated (AIP TGP calibrated, 23 Mar 2026)
@@ -520,7 +520,7 @@ const TANK_LITRES = 50;
 //  ITEMS DATABASE — 100+ items, broadly $80–$125 AUD
 //
 //  Each item: { emoji, name, desc, price, tags[] }
-//  The site matches items within ±$30 of today's fill cost,
+//  The site matches items within ±$3 of today's fill cost,
 //  then picks one deterministically based on day-of-year.
 // ================================================================
 const ITEMS = [
@@ -663,6 +663,88 @@ const ITEMS = [
   { emoji: "🐶", name: "A Dog DNA Test", desc: "Finally find out if your rescue is part kelpie or part mystery. The bowser remains 100% pain.", price: 109, tags: ["pets"] },
   { emoji: "🪑", name: "An Ergonomic Desk Chair", desc: "Lumbar support. Adjustable armrests. Comfort for 8 hours a day. Instead, discomfort for 3 minutes at the bowser.", price: 120, tags: ["home"] },
   { emoji: "🎁", name: "Christmas Sorted for One Kid", desc: "Main present, stocking stuffers, wrapping paper. A child's entire Christmas morning — or one tank of fuel.", price: 110, tags: ["kids"] },
+
+  // ── GAP FILLERS: $91–$93 ──
+  { emoji: "🫕", name: "A Fondue Set + Cheese", desc: "The pot, the forks, a kilo of gruyère. A whole evening of melted cheese and conversation. Instead, melted savings.", price: 92, tags: ["food"] },
+  { emoji: "🧲", name: "A Metal Detector", desc: "Entry-level, but functional. You could find buried treasure at the beach. Instead, you buried $92 at the bowser.", price: 92, tags: ["hobby"] },
+  { emoji: "🎯", name: "A Dartboard + Darts Set", desc: "Professional bristle board, cabinet mount, two sets of tungsten darts. Hours of pub vibes at home.", price: 91, tags: ["hobby"] },
+  { emoji: "🧊", name: "An Esky Full of Steaks", desc: "Twelve premium steaks packed in ice. Enough for a month of BBQs. Instead, you fuelled the car, not the barbie.", price: 93, tags: ["food"] },
+
+  // ── GAP FILLERS: $103–$108 ──
+  { emoji: "🪵", name: "A Fire Pit", desc: "Steel bowl, mesh lid, poker. Backyard fire nights all winter. Instead, you burned money at the servo.", price: 105, tags: ["home"] },
+  { emoji: "🎹", name: "A MIDI Keyboard", desc: "25 keys, USB-powered, make actual music. Instead, the only keys you used today were the ones in the ignition.", price: 107, tags: ["hobby"] },
+  { emoji: "🏕️", name: "A 4-Person Tent", desc: "Waterproof, easy-pitch, fits the family. A weekend escape. Instead, you're trapped at the Caltex.", price: 106, tags: ["hobby"] },
+  { emoji: "🥘", name: "A Month of HelloFresh", desc: "Four weeks of meal kits delivered to your door. Instead, you delivered yourself to the petrol station.", price: 104, tags: ["food"] },
+  { emoji: "🖥️", name: "A Second Monitor", desc: "21-inch, 1080p, doubles your productivity. Instead, you doubled your pain watching the pump tick up.", price: 108, tags: ["tech"] },
+
+  // ── GAP FILLERS: $112–$114 ──
+  { emoji: "🎿", name: "A Season of Ski Wax", desc: "Just kidding — it's a full snowboard tune-up, edges sharpened, base repaired. Your tank got tuned up instead.", price: 113, tags: ["hobby"] },
+  { emoji: "🍽️", name: "Dinner for Two at a Nice Restaurant", desc: "Three courses, a bottle of wine, dessert. A proper date night. Instead, a date with the BP.", price: 112, tags: ["food"] },
+  { emoji: "🧪", name: "A Home Brew Kit", desc: "Fermenter, bottles, ingredients for 30 litres of beer. Thirty litres of joy vs fifty litres of unleaded.", price: 114, tags: ["hobby"] },
+  { emoji: "🛋️", name: "A Weighted Blanket", desc: "9kg of calming pressure. Like a hug that lasts all night. The bowser's hug lasted 3 minutes and cost $113.", price: 113, tags: ["home"] },
+
+  // ── GAP FILLERS: $121–$126 ──
+  { emoji: "🧳", name: "A Carry-On Suitcase", desc: "Hard shell, spinner wheels, TSA lock. Go somewhere. Instead, the only trip you took was to the servo.", price: 122, tags: ["fashion"] },
+  { emoji: "🎧", name: "Noise-Cancelling Headphones", desc: "Over-ear, 30-hour battery, ANC. Block out the world — starting with the sound of the fuel pump.", price: 124, tags: ["tech"] },
+  { emoji: "🍖", name: "A Whole Smoked Brisket", desc: "5kg, 12-hour low-and-slow, delivered ready to eat. Feeds 15 people. Your car feeds zero people.", price: 121, tags: ["food"] },
+  { emoji: "🏠", name: "A Robot Vacuum", desc: "It cleans your floors while you sleep. Your fuel receipt cleans out your wallet while you watch.", price: 125, tags: ["home"] },
+
+  // ── $127–$132 ──
+  { emoji: "🛶", name: "A Kayak Rental Weekend", desc: "Two full days on the water with gear. Paddle somewhere beautiful. Instead, you drove somewhere expensive.", price: 128, tags: ["experience"] },
+  { emoji: "🎺", name: "A Saxophone Lesson Package", desc: "Four one-hour lessons with a pro. Learn jazz. Instead, the only blues you got were at the pump.", price: 130, tags: ["hobby"] },
+  { emoji: "🍳", name: "A Premium Cookware Set", desc: "Stainless steel pan, cast iron skillet, Dutch oven. Cook for years. Your fuel lasts a week.", price: 129, tags: ["home"] },
+  { emoji: "🧖‍♂️", name: "A Couples Spa Day", desc: "Two people, robes, sauna, massage. Pure relaxation. Instead, pure frustration at the bowser.", price: 130, tags: ["experience"] },
+  { emoji: "📸", name: "A Photo Canvas Print", desc: "Your best holiday photo, 60x90cm, gallery-wrapped. Hangs on the wall forever. Fuel hangs around for a week.", price: 127, tags: ["home"] },
+
+  // ── $133–$138 ──
+  { emoji: "🎸", name: "An Electric Guitar", desc: "Entry-level Squier or Yamaha. Plug in, turn up, annoy the neighbours. Better than annoying yourself at the pump.", price: 135, tags: ["hobby"] },
+  { emoji: "🧥", name: "A Quality Winter Jacket", desc: "Waterproof, insulated, looks sharp. Keeps you warm all winter. Your fuel receipt just gives you cold sweats.", price: 136, tags: ["fashion"] },
+  { emoji: "🫖", name: "A Japanese Tea Ceremony Set", desc: "Matcha bowl, whisk, scoop, and a month of premium matcha. Inner peace. The opposite of a fuel station.", price: 134, tags: ["home"] },
+  { emoji: "🍰", name: "A Baking Course", desc: "Six weeks of professional pastry classes. Croissants, sourdough, tarts. The only rising you saw today was the price.", price: 137, tags: ["experience"] },
+
+  // ── $139–$144 ──
+  { emoji: "🚴", name: "A Bike Service + New Tyres", desc: "Full tune-up, new rubber, brake adjustment. Zero fuel cost transport for months. Instead, you fed the car.", price: 140, tags: ["hobby"] },
+  { emoji: "🎭", name: "Two Theatre Tickets + Dinner", desc: "A proper night out — live show, pre-theatre meal, interval drinks. Culture. Instead, you got a servo receipt.", price: 142, tags: ["experience"] },
+  { emoji: "🧬", name: "A Full Health Check-up", desc: "Blood panel, heart screen, skin check. Know your body. Your car knows your wallet better.", price: 141, tags: ["wellness"] },
+  { emoji: "📦", name: "A Month of All Your Subscriptions", desc: "Netflix, Spotify, gym, cloud storage, news — every single subscription for a month. Or one tank.", price: 139, tags: ["entertainment"] },
+  { emoji: "🪑", name: "A Standing Desk Converter", desc: "Sit-stand, adjustable, fits on your existing desk. Better posture for months. Fuel gives you nothing for weeks.", price: 143, tags: ["home"] },
+
+  // ── $145–$150 ──
+  { emoji: "🐕‍🦺", name: "A Dog Training Course", desc: "Six-week obedience program. A well-behaved dog for life. Instead, a well-fed car for about ten days.", price: 145, tags: ["pets"] },
+  { emoji: "🏄‍♂️", name: "A Wetsuit", desc: "3/2mm, fits like a glove, lasts for years of surf sessions. Zero fuel required. Maximum stoke.", price: 148, tags: ["hobby"] },
+  { emoji: "🍷", name: "A Wine Tasting Weekend", desc: "Two people, five wineries, cheese platters, designated driver. Instead, you were the driver. At the servo.", price: 150, tags: ["experience"] },
+  { emoji: "🧱", name: "1,500 Piece LEGO Set", desc: "A display-worthy build — architecture, space shuttle, or botanical. 20 hours of focus. Fuel gives you 20 minutes of driving.", price: 146, tags: ["hobby"] },
+  { emoji: "💻", name: "A Refurbished iPad", desc: "Previous gen, works perfectly, watch movies, read books, draw. Instead, you watched numbers go up at the pump.", price: 149, tags: ["tech"] },
+
+  // ── $151–$156 ──
+  { emoji: "🎤", name: "A Karaoke Machine", desc: "Bluetooth speaker, two wireless mics, disco lights. Own the party. Own the shame. Still better than owning a fuel bill.", price: 152, tags: ["entertainment"] },
+  { emoji: "🏋️‍♀️", name: "A Set of Adjustable Dumbbells", desc: "5–25kg each, replaces 10 pairs of dumbbells. A home gym starter. The only heavy thing should be your lifts, not your fuel bill.", price: 155, tags: ["hobby"] },
+  { emoji: "🧳", name: "A Weekend Away (Accommodation)", desc: "Two nights in a cabin or Airbnb within driving distance. Wait — you'd need more fuel. The irony writes itself.", price: 153, tags: ["experience"] },
+  { emoji: "🎂", name: "Catering for a Kids' Party", desc: "Food, cake, decorations for 15 kids. An entire birthday party. Instead, a deeply unspecial trip to the bowser.", price: 151, tags: ["kids"] },
+
+  // ── $157–$160 ──
+  { emoji: "🖼️", name: "A Custom Portrait Commission", desc: "A local artist paints you, your family, or your pet. Art that lasts forever. Fuel that lasts until next Tuesday.", price: 158, tags: ["home"] },
+  { emoji: "🎓", name: "An Online Course Certificate", desc: "A Coursera or Udemy professional cert. Advance your career. Instead, you advanced to the next price tier at the pump.", price: 159, tags: ["experience"] },
+  { emoji: "🏖️", name: "A Family Day at a Water Park", desc: "Four tickets, lunch, locker rental. Slides, wave pools, sunburn. A memory that lasts longer than a tank of fuel.", price: 160, tags: ["kids"] },
+  { emoji: "🎻", name: "A Violin", desc: "A genuine student violin with bow and case. Learn an instrument that runs on rosin, not unleaded.", price: 157, tags: ["hobby"] },
+  { emoji: "🍕", name: "Pizza for the Entire Office", desc: "25 large pizzas. Enough to feed 50 people. You'd be a hero at work. Instead, you're a customer at the servo.", price: 160, tags: ["food"] },
+
+  // ── REMAINING GAP FILLERS ──
+  { emoji: "🧴", name: "A Skincare Routine Starter Kit", desc: "Cleanser, serum, moisturiser, SPF — the good brands. Your skin would glow. Instead, only the pump display glows.", price: 103, tags: ["wellness"] },
+  { emoji: "🪶", name: "A Memory Foam Pillow Set", desc: "Two premium pillows. Better sleep every single night. Your fuel gives you better commutes for about a week.", price: 102, tags: ["home"] },
+  { emoji: "🎃", name: "A Full Halloween Setup", desc: "Fog machine, decorations, costumes for two. The scariest thing this year is still the fuel price.", price: 104, tags: ["entertainment"] },
+  { emoji: "🧊", name: "A Portable Ice Maker", desc: "Countertop, makes ice in 8 minutes. Cold drinks forever. Instead, a cold feeling in your wallet.", price: 118, tags: ["home"] },
+  { emoji: "🌊", name: "A Snorkelling Kit for Two", desc: "Masks, fins, snorkels, mesh bags. Explore the reef. Instead, you explored the bowser's price display.", price: 117, tags: ["hobby"] },
+  { emoji: "🗺️", name: "A National Parks Annual Pass", desc: "Unlimited entry to every national park in the state for a year. Nature is free — getting there isn't.", price: 127, tags: ["experience"] },
+  { emoji: "🧂", name: "A Charcuterie Masterclass", desc: "Learn to cure meats, make pâté, build boards. Skills that last forever. Unlike a tank of fuel.", price: 133, tags: ["experience"] },
+  { emoji: "🎪", name: "Four Circus Tickets", desc: "Acrobats, trapeze, clowns — the whole family. The only circus today should've been under a big top, not at a servo.", price: 132, tags: ["entertainment"] },
+  { emoji: "🏊", name: "10 Swim Lessons", desc: "Get confident in the water — or improve your technique. More useful than being confident you'll pay over $2/litre.", price: 139, tags: ["wellness"] },
+  { emoji: "🎣", name: "A Deep Sea Fishing Charter", desc: "Half-day offshore, rods and tackle included. Catch your dinner. Instead, the bowser caught your wallet.", price: 145, tags: ["experience"] },
+  { emoji: "🧸", name: "A Build-A-Bear Party", desc: "Four kids, custom bears, outfits, birth certificates. Pure joy. Instead, pure unleaded.", price: 148, tags: ["kids"] },
+  { emoji: "🖥️", name: "A Mechanical Keyboard + Mouse", desc: "Cherry switches, RGB, ergonomic mouse. The ultimate desk setup. Instead, the ultimate pump setup.", price: 154, tags: ["tech"] },
+  { emoji: "🎿", name: "A Day of Ski Lessons", desc: "Group lesson, lift pass, equipment rental. Learn to shred powder. Instead, your wallet got shredded.", price: 155, tags: ["experience"] },
+  { emoji: "🌿", name: "A Balcony Garden Makeover", desc: "Planters, potting mix, herbs, flowers, a small trellis. Transform your space. The only transformation today was your bank balance.", price: 156, tags: ["home"] },
+  { emoji: "🎵", name: "A Year of Spotify Family", desc: "Six accounts, unlimited music, no ads, for 12 months. A year of joy — or a single trip to the bowser.", price: 156, tags: ["entertainment"] },
 ];
 
 
@@ -693,9 +775,13 @@ function pickItem(dayOffset, priceCents) {
   const doy = getDayOfYear(d);
   const fillCost = (priceCents / 100) * TANK_LITRES;
 
-  // Filter items within ±$30 of fill cost
-  let pool = ITEMS.filter(i => Math.abs(i.price - fillCost) <= 30);
-  if (pool.length < 10) pool = ITEMS; // fallback to full list
+  // Try tight match first (±$3), widen only if needed
+  let pool;
+  for (const range of [3, 6, 10, 20]) {
+    pool = ITEMS.filter(i => Math.abs(i.price - fillCost) <= range);
+    if (pool.length >= 3) break;
+  }
+  if (pool.length < 3) pool = ITEMS;
 
   // Deterministic pick based on day
   const idx = Math.floor(seeded(doy * 7 + 3) * pool.length);
