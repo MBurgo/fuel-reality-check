@@ -574,6 +574,7 @@ function renderCarGrid(filter) {
     return;
   }
 
+  const sorted = [...filtered].sort((a, b) => a.name.localeCompare(b.name));
   grid.innerHTML = filtered.map(c => {
     const isEV = c.tank === 0;
     const meta = isEV ? `${c.type} · ${c.fuel}` : `${c.type} · ${c.tank}L`;
