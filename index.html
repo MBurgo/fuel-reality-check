@@ -535,14 +535,19 @@ function getDayOfYear(d) { const start = new Date(d.getFullYear(), 0, 0); return
 function seeded(seed) { let x = Math.sin(seed) * 10000; return x - Math.floor(x); }
 function simPrice(dayOffset) { const d = new Date(); d.setDate(d.getDate() - dayOffset); const seed = d.getFullYear() * 1000 + getDayOfYear(d); return FALLBACK_PRICE_CENTS + (seeded(seed) - 0.5) * 24; }
 
-function pickItem(dayOffset, priceCents) {
+function pickItem(dayOffset, priceCents, excludeNames) {
   const d = new Date(); d.setDate(d.getDate() - dayOffset);
   const doy = getDayOfYear(d);
   const fillCost = (priceCents / 100) * TANK_LITRES;
   let pool;
   for (const range of [3, 6, 10, 20]) { pool = ITEMS.filter(i => Math.abs(i.price - fillCost) <= range); if (pool.length >= 3) break; }
   if (pool.length < 3) pool = ITEMS;
-  const idx = Math.floor(seeded(doy * 7 + 3) * pool.length);
+  // Remove already-used items if possible
+  if (excludeNames && excludeNames.length > 0) {
+    const filtered = pool.filter(i => !excludeNames.includes(i.name));
+    if (filtered.length > 0) pool = filtered;
+  }
+  const idx = Math.floor(seeded(doy * 7 + dayOffset * 13 + 3) * pool.length);
   return pool[idx];
 }
 
@@ -574,8 +579,7 @@ function renderCarGrid(filter) {
     return;
   }
 
-  const sorted = [...filtered].sort((a, b) => a.name.localeCompare(b.name));
-  grid.innerHTML = sorted.map(c => {
+  grid.innerHTML = filtered.map(c => {
     const isEV = c.tank === 0;
     const meta = isEV ? `${c.type} · ${c.fuel}` : `${c.type} · ${c.tank}L`;
     return `<div class="car-option${c.id === SELECTED_CAR ? ' selected' : ''}" data-id="${c.id}" onclick="selectCar('${c.id}')">
@@ -679,7 +683,7 @@ function renderPage() {
   $('heroPrice').innerHTML = `$${whole}<span class="sup">.${cents}</span>`;
   $('litrePrice').textContent = `${Math.round(priceCents)}c/L ${isDiesel ? 'diesel' : ''}`;
 
-  const item = pickItem(0, priceCents);
+  const item = pickItem(0, priceCents, []);
   $('todayEmoji').textContent = item.emoji;
   $('todayName').textContent = item.name;
   $('todayDesc').textContent = item.desc;
@@ -690,10 +694,12 @@ function renderPage() {
   $('statMonthly').textContent = fmtDollars(fillCost * 8);
   $('statYearly').textContent = fmtDollars(fillCost * 100);
 
+  const usedNames = [item.name];
   const isLive = source !== 'simulated';
   for (let i = 1; i <= 2; i++) {
     const pastPrice = isLive ? priceCents + (seeded(getDayOfYear(today) - i) - 0.5) * 10 : simPrice(i);
-    const pastItem = pickItem(i, pastPrice);
+    const pastItem = pickItem(i, pastPrice, usedNames);
+    usedNames.push(pastItem.name);
     const pastDate = new Date(); pastDate.setDate(pastDate.getDate() - i);
     $(`pastDay${i}Label`).textContent = pastDate.toLocaleDateString('en-AU', { weekday: 'long' });
     $(`pastDay${i}Emoji`).textContent = pastItem.emoji;
