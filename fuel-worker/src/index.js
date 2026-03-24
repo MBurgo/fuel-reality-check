@@ -50,27 +50,20 @@ function corsHeaders(origin) {
 }
 
 /**
- * Parse ALL Brisbane TGP prices from the AIP TGP table.
+ * Parse Brisbane TGP prices from a section of the AIP TGP table.
+ * @param {string} html - HTML content to search
+ * @param {string} fuelKey - 'brisbaneUlp' or 'brisbaneDiesel'
  * Returns an array of { date, price } objects (most recent last),
  * or empty array on failure. Prices in cents/L.
- *
- * Actual HTML structure (as returned to Cloudflare Workers):
- *   <th ...><a class="table" href="...brisbaneUlp" ...>Brisbane</a></th>
- *   <td>224.5</td>
- *   <td>230.1</td>
- *   ...
  */
-function parseTGPPrices(html) {
+function parseTGPPrices(html, fuelKey = 'brisbaneUlp') {
   const results = [];
 
-  // Find Brisbane row: <th> with brisbaneUlp link, followed by <td> price cells
-  // The </th> closes the label, then <td>price</td> cells follow until </tr>
   const brisbaneMatch = html.match(
-    /brisbaneUlp[\s\S]*?<\/th>([\s\S]*?)<\/tr>/i
+    new RegExp(fuelKey + '[\\s\\S]*?<\\/th>([\\s\\S]*?)<\\/tr>', 'i')
   );
   if (!brisbaneMatch) return results;
 
-  // Extract all <td>NUMBER</td> cells from the matched row
   const priceCells = [...brisbaneMatch[1].matchAll(
     /<td[^>]*>\s*([\d.]+)\s*<\/td>/gi
   )];
@@ -121,11 +114,17 @@ export default {
         'http://api.aip.com.au/public/tgpTables',
       ];
 
-      const retailResp = await fetch('http://api.aip.com.au/public/qldUlpTable', {
-        headers: { 'User-Agent': 'FuelRealityCheck/1.0' },
-      }).catch(() => null);
+      const [retailResp, dieselRetailResp] = await Promise.all([
+        fetch('http://api.aip.com.au/public/qldUlpTable', {
+          headers: { 'User-Agent': 'FuelRealityCheck/1.0' },
+        }).catch(() => null),
+        fetch('http://api.aip.com.au/public/qldDieselTable?fuelType=Diesel', {
+          headers: { 'User-Agent': 'FuelRealityCheck/1.0' },
+        }).catch(() => null),
+      ]);
 
       let tgpPrices = [];
+      let dieselTgpPrices = [];
       let tgpError = null;
       let tgpDebugAll = [];
 
@@ -141,8 +140,10 @@ export default {
           if (resp.ok) {
             const html = await resp.text();
             const hasBrisbane = html.includes('brisbaneUlp');
+            const hasDiesel = html.includes('brisbaneDiesel');
             const hasTGP = html.includes('Terminal Gate');
-            tgpPrices = parseTGPPrices(html);
+            tgpPrices = parseTGPPrices(html, 'brisbaneUlp');
+            dieselTgpPrices = parseTGPPrices(html, 'brisbaneDiesel');
             
             tgpDebugAll.push({
               url,
@@ -150,12 +151,10 @@ export default {
               status,
               bytes: html.length,
               hasBrisbane,
+              hasDiesel,
               hasTGP,
-              pricesFound: tgpPrices.length,
-              snippet: html.substring(0, 500),
-              brisbaneContext: hasBrisbane 
-                ? html.substring(Math.max(0, html.indexOf('brisbaneUlp') - 100), html.indexOf('brisbaneUlp') + 500)
-                : null,
+              petrolPricesFound: tgpPrices.length,
+              dieselPricesFound: dieselTgpPrices.length,
             });
             
             if (tgpPrices.length > 0) break;
@@ -173,7 +172,13 @@ export default {
         retailPrice = parseRetailPrice(html);
       }
 
-      // ── Calculate calibrated daily price ──
+      let dieselRetailPrice = null;
+      if (dieselRetailResp && dieselRetailResp.ok) {
+        const html = await dieselRetailResp.text();
+        dieselRetailPrice = parseRetailPrice(html);
+      }
+
+      // ── Calculate calibrated daily price for PETROL ──
       let finalCents;
       let source;
       let offset = null;
@@ -214,20 +219,64 @@ export default {
       if (finalCents < 100) finalCents = FALLBACK_PRICE;
       if (finalCents > 400) finalCents = FALLBACK_PRICE;
 
+      // ── Calculate calibrated daily price for DIESEL ──
+      let dieselFinalCents;
+      let dieselSource;
+      let dieselOffset = null;
+
+      const dieselLatestTGP = dieselTgpPrices.length > 0
+        ? dieselTgpPrices[dieselTgpPrices.length - 1].price
+        : null;
+      const dieselEarliestTGP = dieselTgpPrices.length > 0
+        ? dieselTgpPrices[0].price
+        : null;
+
+      if (dieselLatestTGP && dieselRetailPrice) {
+        dieselOffset = dieselRetailPrice - dieselEarliestTGP;
+        dieselFinalCents = Math.round(dieselLatestTGP + dieselOffset);
+        dieselSource = 'aip-daily-calibrated';
+      } else if (dieselLatestTGP) {
+        dieselOffset = -3;
+        dieselFinalCents = Math.round(dieselLatestTGP + dieselOffset);
+        dieselSource = 'aip-tgp-estimated';
+      } else if (dieselRetailPrice) {
+        dieselFinalCents = Math.round(dieselRetailPrice);
+        dieselSource = 'aip-retail-weekly';
+      } else {
+        // Fallback: diesel is typically ~15% more than petrol
+        dieselFinalCents = Math.round(finalCents * 1.15);
+        dieselSource = 'estimated-from-petrol';
+      }
+
+      if (dieselFinalCents < 100) dieselFinalCents = Math.round(FALLBACK_PRICE * 1.15);
+      if (dieselFinalCents > 500) dieselFinalCents = Math.round(FALLBACK_PRICE * 1.15);
+
       const responseData = {
         status: source === 'fallback' ? 'fallback' : 'ok',
         city: 'brisbane',
+        // Petrol (backwards-compatible fields)
         fuel_type: 'U91',
         price_per_litre: parseFloat((finalCents / 100).toFixed(3)),
         price_cents_per_litre: finalCents,
         source,
+        // Diesel
+        diesel_price_cents_per_litre: dieselFinalCents,
+        diesel_source: dieselSource,
         calibration: {
-          retail_weekly: retailPrice,
-          tgp_latest: latestTGP,
-          tgp_earliest: earliestTGP,
-          offset,
+          petrol: {
+            retail_weekly: retailPrice,
+            tgp_latest: latestTGP,
+            tgp_earliest: earliestTGP,
+            offset,
+          },
+          diesel: {
+            retail_weekly: dieselRetailPrice,
+            tgp_latest: dieselLatestTGP,
+            tgp_earliest: dieselEarliestTGP,
+            offset: dieselOffset,
+          },
         },
-        tgp_history: tgpPrices,
+        tgp_history: { petrol: tgpPrices, diesel: dieselTgpPrices },
         tgp_debug: tgpDebugAll,
         fetched_at: new Date().toISOString(),
       };
