@@ -579,7 +579,7 @@ function renderCarGrid(filter) {
     return;
   }
 
-  grid.innerHTML = filtered.map(c => {
+  grid.innerHTML = [...filtered].sort((a, b) => a.name.localeCompare(b.name)).map(c => {
     const isEV = c.tank === 0;
     const meta = isEV ? `${c.type} · ${c.fuel}` : `${c.type} · ${c.tank}L`;
     return `<div class="car-option${c.id === SELECTED_CAR ? ' selected' : ''}" data-id="${c.id}" onclick="selectCar('${c.id}')">
