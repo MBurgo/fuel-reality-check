@@ -182,7 +182,7 @@
     </div>
   </div>
   <footer class="footer">
-    Prices are indicative Brisbane metro averages for Unleaded 91.<br>
+    Prices are indicative Brisbane metro averages for <span id="footerFuelLabel">Unleaded 91</span>.<br>
     Tank size: <span id="footerCarLabel">Toyota Camry (50L)</span>. Your mileage — and misery — may vary.<br>
     Not affiliated with any fuel company. Just annoyed.<br>
     <a href="https://www.mattb.com.au">Made by Matt Burgess</a>
@@ -192,6 +192,7 @@
 <script>
 const WORKER_URL = 'https://fuel-price-worker.matthew-edward-burgess.workers.dev/';
 const FALLBACK_PRICE_CENTS = 235;
+const FALLBACK_DIESEL_CENTS = 270;
 let TANK_LITRES = 50;
 let SELECTED_CAR = 'toyota-camry';
 
@@ -507,6 +508,27 @@ const ITEMS = [
   { emoji: "🎵", name: "Front Row Concert Tickets", desc: "Two tickets, premium section, face-melting proximity to the stage. Instead, face-melting proximity to the price display.", price: 242, tags: ["experience"] },
   { emoji: "🏕️", name: "A Full Camping Setup", desc: "Tent, swags, camp kitchen, chairs, lantern, esky. Everything for a family camping trip. Instead, everything went to diesel.", price: 248, tags: ["hobby"] },
   { emoji: "🧹", name: "A Dyson Airwrap", desc: "The hairstyling tool everyone wants. Curls, waves, smooth for years. The only thing smooth today was how fast the pump drained your account.", price: 244, tags: ["home"] },
+  // --- $281–$330 range (LandCruiser 110L on diesel) ---
+  { emoji: "📱", name: "An iPad Pro", desc: "M-series chip, 11-inch, 256GB. A creative powerhouse that lasts years. Your LandCruiser's diesel lasted about a week.", price: 285, tags: ["tech"] },
+  { emoji: "🛋️", name: "A Sofa Reupholstery", desc: "New fabric, new cushions, your old couch reborn. Lasts another decade. Your diesel lasted until next Thursday.", price: 290, tags: ["home"] },
+  { emoji: "🚴", name: "A Quality Mountain Bike", desc: "Hydraulic disc brakes, front suspension, trail-ready. Years of free weekend rides. Instead, one tank of diesel.", price: 288, tags: ["hobby"] },
+  { emoji: "🎸", name: "A Gibson Epiphone Guitar", desc: "Les Paul Standard. A guitar that holds its value. Unlike 110 litres of diesel, which holds nothing.", price: 295, tags: ["hobby"] },
+  { emoji: "🍖", name: "A Whole Pig on a Spit", desc: "Whole pig, spit hire, salads, bread, sauces — catering for 60 people. A legendary party. Or one tank of diesel.", price: 292, tags: ["food"] },
+  { emoji: "🏠", name: "A Roomba + Braava Combo", desc: "Robot vacuum AND robot mop. Your floors cleaned forever. Your wallet? Cleaned out at the diesel pump.", price: 298, tags: ["home"] },
+  { emoji: "🎮", name: "A Gaming Console + Two Games", desc: "PlayStation or Xbox, two AAA titles. Thousands of hours of entertainment. Or 110 litres of temporary diesel.", price: 300, tags: ["entertainment"] },
+  { emoji: "🧳", name: "Return Flights to Bali for One", desc: "Brisbane to Bali and back. An international holiday. For the price of filling your LandCruiser. Once.", price: 302, tags: ["experience"] },
+  { emoji: "🐕", name: "A Full Year of Premium Pet Food", desc: "12 months of the good stuff for a large dog. Your best mate fed for a year, or your cruiser fed for a week.", price: 305, tags: ["pets"] },
+  { emoji: "💻", name: "A Refurbished MacBook Pro", desc: "M-series, 16GB RAM, runs everything. A machine that lasts 5+ years. Your diesel lasted 5+ days.", price: 308, tags: ["tech"] },
+  { emoji: "🎿", name: "A Full Week of Lift Passes", desc: "Seven days at Thredbo or Perisher. An entire ski holiday's worth of mountain time. Or one diesel fill-up.", price: 310, tags: ["experience"] },
+  { emoji: "🍷", name: "A Premium Wine Collection", desc: "12 bottles of cellar-worthy reds. Penfolds, Henschke, Torbreck. Appreciating assets. Unlike diesel.", price: 312, tags: ["food"] },
+  { emoji: "🛏️", name: "A King-Size Mattress", desc: "Pocket spring, pillow-top, 15-year warranty. 5,475 nights of better sleep. Your diesel gives you about 10 days of driving.", price: 315, tags: ["home"] },
+  { emoji: "🎤", name: "Two VIP Concert Tickets", desc: "Premium reserved, backstage access, drinks package. A night you'll never forget. Instead, a diesel bill you'll try to.", price: 318, tags: ["experience"] },
+  { emoji: "📷", name: "A Mirrorless Camera", desc: "Entry-level Sony or Fuji, kit lens included. Capture memories for a decade. Your LandCruiser captured $320.", price: 320, tags: ["tech"] },
+  { emoji: "🏡", name: "A Deck Restoration", desc: "Sanding, oiling, sealing. Your outdoor entertaining area reborn. Instead, 110 litres of diesel. Entertaining no one.", price: 322, tags: ["home"] },
+  { emoji: "🧖", name: "A Spa Retreat Weekend for Two", desc: "One night, hot springs, couples massage, three-course dinner. Actual relaxation. Instead, actual diesel.", price: 325, tags: ["experience"] },
+  { emoji: "🎓", name: "A Professional Development Course", desc: "An accredited short course — project management, data analytics, or UX design. Career growth. Instead, fuel gauge growth.", price: 328, tags: ["experience"] },
+  { emoji: "🚀", name: "A Drone", desc: "DJI Mini, 4K camera, 30-minute flight time. See the world from above. Instead, you saw $330 on the pump display from below.", price: 330, tags: ["tech"] },
+  { emoji: "🎸", name: "A Fender Player Stratocaster", desc: "The real deal. Alder body, maple neck, three single-coils. A guitar for life. Instead, diesel for a week.", price: 325, tags: ["hobby"] },
 ];
 
 function getDayOfYear(d) { const start = new Date(d.getFullYear(), 0, 0); return Math.floor((d - start) / 864e5); }
@@ -604,19 +626,38 @@ function selectCar(id) {
   TANK_LITRES = car.tank;
   saveCar(id);
   closeCarDropdown();
-  if (window._lastPriceCents) renderPage(window._lastPriceCents, window._lastSource);
+  if (window._petrolCents) renderPage();
 }
 
 async function fetchLivePrice() {
   if (!WORKER_URL) return null;
-  try { const r = await fetch(WORKER_URL, { signal: AbortSignal.timeout(4000) }); const d = await r.json(); if (d.price_cents_per_litre) return { cents: d.price_cents_per_litre, source: d.source || 'live' }; return null; } catch { return null; }
+  try {
+    const r = await fetch(WORKER_URL, { signal: AbortSignal.timeout(4000) });
+    const d = await r.json();
+    if (d.price_cents_per_litre) return {
+      petrol: d.price_cents_per_litre,
+      diesel: d.diesel_price_cents_per_litre || Math.round(d.price_cents_per_litre * 1.15),
+      source: d.source || 'live',
+      dieselSource: d.diesel_source || d.source || 'live',
+    };
+    return null;
+  } catch { return null; }
 }
 
-function renderPage(priceCents, source) {
-  window._lastPriceCents = priceCents;
-  window._lastSource = source;
+function getActivePriceCents() {
+  const car = getCarById(SELECTED_CAR);
+  const isDiesel = car.fuel === 'Diesel';
+  if (isDiesel) {
+    return { cents: window._dieselCents, source: window._dieselSource };
+  }
+  return { cents: window._petrolCents, source: window._petrolSource };
+}
+
+function renderPage() {
+  const { cents: priceCents, source } = getActivePriceCents();
   const today = new Date();
   const car = getCarById(SELECTED_CAR);
+  const isDiesel = car.fuel === 'Diesel';
   const pricePerLitre = priceCents / 100;
   const fillCost = pricePerLitre * TANK_LITRES;
 
@@ -624,17 +665,18 @@ function renderPage(priceCents, source) {
   $('heroCarLabel').textContent = getCarLabel(car);
   $('heroTankLabel').textContent = `${car.tank} litres`;
   $('footerCarLabel').textContent = `${car.name} (${car.tank}L)`;
+  $('footerFuelLabel').textContent = isDiesel ? 'Diesel' : 'Unleaded 91';
 
   $('liveDate').textContent = today.toLocaleDateString('en-AU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
-  const badgeMap = { 'aip-daily-calibrated': ['Daily price', ''], 'aip-tgp-estimated': ['Daily estimate', ''], 'aip-retail-weekly': ['Weekly avg', ''], 'fallback': ['Estimated', 'fallback'], 'simulated': ['Estimated', 'fallback'] };
+  const badgeMap = { 'aip-daily-calibrated': ['Daily price', ''], 'aip-tgp-estimated': ['Daily estimate', ''], 'aip-retail-weekly': ['Weekly avg', ''], 'estimated-from-petrol': ['Estimated', 'fallback'], 'fallback': ['Estimated', 'fallback'], 'simulated': ['Estimated', 'fallback'] };
   const [badgeText, badgeClass] = badgeMap[source] || ['Live', ''];
   $('sourceTag').innerHTML = `<span class="source-badge ${badgeClass}">${badgeText}</span>`;
 
   const whole = Math.floor(fillCost);
   const cents = Math.round((fillCost - whole) * 100).toString().padStart(2, '0');
   $('heroPrice').innerHTML = `$${whole}<span class="sup">.${cents}</span>`;
-  $('litrePrice').textContent = `${Math.round(priceCents)}c/L`;
+  $('litrePrice').textContent = `${Math.round(priceCents)}c/L ${isDiesel ? 'diesel' : ''}`;
 
   const item = pickItem(0, priceCents);
   $('todayEmoji').textContent = item.emoji;
@@ -658,6 +700,7 @@ function renderPage(priceCents, source) {
     const pastFill = (pastPrice / 100) * TANK_LITRES;
     $(`pastDay${i}Cost`).textContent = `$${pastFill.toFixed(0)} fill-up = $${pastItem.price} wasted`;
   }
+  updateShareLinks();
 }
 
 async function init() {
@@ -667,11 +710,12 @@ async function init() {
   TANK_LITRES = car.tank;
 
   const liveData = await fetchLivePrice();
-  let priceCents = liveData ? liveData.cents : null;
-  let source = liveData ? liveData.source : 'simulated';
-  if (!priceCents) { priceCents = simPrice(0); source = 'simulated'; }
+  window._petrolCents = liveData ? liveData.petrol : simPrice(0);
+  window._petrolSource = liveData ? liveData.source : 'simulated';
+  window._dieselCents = liveData ? liveData.diesel : Math.round(simPrice(0) * 1.15);
+  window._dieselSource = liveData ? liveData.dieselSource : 'simulated';
 
-  renderPage(priceCents, source);
+  renderPage();
 }
 
 function getShareText() {
