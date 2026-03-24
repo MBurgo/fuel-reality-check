@@ -10,13 +10,16 @@
 <meta property="og:title" content="Fuel Reality Check">
 <meta property="og:description" content="Today's fill-up could've bought you something way better.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://fuelrealitycheck.com.au">
-<!-- <meta property="og:image" content="https://fuelrealitycheck.com.au/og.png"> -->
+<meta property="og:url" content="https://fuel-reality-check.pages.dev">
+<meta property="og:image" content="https://fuel-og-image.matthew-edward-burgess.workers.dev/">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Fuel Reality Check">
 <meta name="twitter:description" content="Today's fill-up could've bought you something way better.">
+<meta name="twitter:image" content="https://fuel-og-image.matthew-edward-burgess.workers.dev/">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Libre+Franklin:wght@400;500;600;700;900&display=swap" rel="stylesheet">
@@ -36,423 +39,77 @@
     --green: #00E676;
     --border: rgba(255,255,255,0.06);
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--black);
-    color: var(--white);
-    font-family: 'Libre Franklin', -apple-system, sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* Ambient background glow */
-  .bg-glow {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    pointer-events: none;
-    z-index: 0;
-    background:
-      radial-gradient(ellipse 600px 400px at 15% 30%, rgba(255, 107, 0, 0.05) 0%, transparent 100%),
-      radial-gradient(ellipse 500px 500px at 85% 70%, rgba(255, 214, 0, 0.03) 0%, transparent 100%);
-  }
-
-  .page {
-    position: relative;
-    z-index: 1;
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 1.5rem;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* ── Top bar ── */
-  .topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 1.25rem;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 2.5rem;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.8rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--white-dim);
-  }
-
-  .topbar .pulse-dot {
-    display: inline-block;
-    width: 5px; height: 5px;
-    background: var(--red);
-    border-radius: 50%;
-    margin-right: 0.5rem;
-    animation: blink 2.5s ease-in-out infinite;
-  }
-
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.2; }
-  }
-
-  /* ── Hero ── */
-  .section-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.8rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--orange);
-    margin-bottom: 0.75rem;
-  }
-
-  .hero-price {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(5rem, 18vw, 11rem);
-    line-height: 0.85;
-    color: var(--yellow);
-    text-shadow: 0 0 120px rgba(255, 214, 0, 0.1);
-    margin-bottom: 0.5rem;
-  }
-
-  .hero-price .sup {
-    font-size: 0.4em;
-    vertical-align: super;
-    color: var(--orange);
-  }
-
-  .hero-sub {
-    font-size: 1.05rem;
-    font-weight: 400;
-    color: var(--white-dim);
-    line-height: 1.6;
-    margin-bottom: 3rem;
-    max-width: 540px;
-  }
-
-  .hero-sub strong {
-    color: var(--white);
-    font-weight: 600;
-  }
-
-  /* ── Comparison card ── */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-
-  .card-header {
-    background: var(--orange);
-    color: var(--black);
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 0.95rem;
-    letter-spacing: 0.3em;
-    padding: 0.55rem 1.5rem;
-  }
-
-  .card-body {
-    padding: 2rem 1.5rem 1.75rem;
-    display: flex;
-    gap: 1.5rem;
-    align-items: flex-start;
-  }
-
-  .card-emoji {
-    font-size: 3.5rem;
-    line-height: 1;
-    flex-shrink: 0;
-  }
-
+  body { background: var(--black); color: var(--white); font-family: 'Libre Franklin', -apple-system, sans-serif; min-height: 100vh; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+  .bg-glow { position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 0; background: radial-gradient(ellipse 600px 400px at 15% 30%, rgba(255, 107, 0, 0.05) 0%, transparent 100%), radial-gradient(ellipse 500px 500px at 85% 70%, rgba(255, 214, 0, 0.03) 0%, transparent 100%); }
+  .page { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; padding: 1.5rem; min-height: 100vh; display: flex; flex-direction: column; }
+  .topbar { display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); margin-bottom: 2.5rem; font-family: 'Space Mono', monospace; font-size: 0.8rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--white-dim); }
+  .topbar .pulse-dot { display: inline-block; width: 5px; height: 5px; background: var(--red); border-radius: 50%; margin-right: 0.5rem; animation: blink 2.5s ease-in-out infinite; }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+  .section-label { font-family: 'Space Mono', monospace; font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--orange); margin-bottom: 0.75rem; }
+  .hero-price { font-family: 'Bebas Neue', sans-serif; font-size: clamp(5rem, 18vw, 11rem); line-height: 0.85; color: var(--yellow); text-shadow: 0 0 120px rgba(255, 214, 0, 0.1); margin-bottom: 0.5rem; }
+  .hero-price .sup { font-size: 0.4em; vertical-align: super; color: var(--orange); }
+  .hero-sub { font-size: 1.05rem; font-weight: 400; color: var(--white-dim); line-height: 1.6; margin-bottom: 3rem; max-width: 540px; }
+  .hero-sub strong { color: var(--white); font-weight: 600; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 3px; overflow: hidden; }
+  .card-header { background: var(--orange); color: var(--black); font-family: 'Bebas Neue', sans-serif; font-size: 0.95rem; letter-spacing: 0.3em; padding: 0.55rem 1.5rem; }
+  .card-body { padding: 2rem 1.5rem 1.75rem; display: flex; gap: 1.5rem; align-items: flex-start; }
+  .card-emoji { font-size: 3.5rem; line-height: 1; flex-shrink: 0; }
   .card-content { flex: 1; }
-
-  .card-item-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(2.2rem, 7vw, 3.8rem);
-    line-height: 0.95;
-    color: var(--white);
-    margin-bottom: 0.5rem;
-  }
-
-  .card-item-desc {
-    font-size: 1rem;
-    color: var(--white-dim);
-    line-height: 1.55;
-  }
-
-  .card-item-price {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.85rem;
-    color: var(--yellow);
-    margin-top: 0.85rem;
-    letter-spacing: 0.04em;
-  }
-
-  .card-footer {
-    border-top: 1px solid var(--border);
-    padding: 1rem 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.75rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--white-dim);
-  }
-
-  .refresh-label {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-  }
-
-  .refresh-label svg {
-    width: 13px; height: 13px;
-    opacity: 0.4;
-  }
-
-  /* ── Stats grid ── */
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--border);
-    margin-top: 2rem;
-    border: 1px solid var(--border);
-  }
-
-  .stat-cell {
-    background: var(--black);
-    padding: 1.1rem 0.75rem;
-    text-align: center;
-  }
-
-  .stat-val {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.75rem;
-    color: var(--yellow);
-    line-height: 1;
-  }
-
-  .stat-lbl {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--white-dim);
-    margin-top: 0.35rem;
-    line-height: 1.4;
-  }
-
-  /* ── Past items (yesterday / day before) ── */
-  .past-section {
-    margin-top: 2.5rem;
-  }
-
-  .past-items {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-  }
-
-  .past-item {
-    background: var(--surface);
-    padding: 1.25rem;
-  }
-
-  .past-item .past-day {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.75rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--white-dim);
-    margin-bottom: 0.6rem;
-  }
-
-  .past-item .past-emoji {
-    font-size: 1.8rem;
-    margin-bottom: 0.4rem;
-  }
-
-  .past-item .past-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.4rem;
-    color: var(--white);
-    line-height: 1.1;
-  }
-
-  .past-item .past-cost {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--yellow);
-    margin-top: 0.3rem;
-  }
-
-  /* ── Share bar ── */
-  .share-bar {
-    margin-top: 2.5rem;
-    padding-top: 1.25rem;
-    border-top: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .share-bar .tagline {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.8rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--white-dim);
-  }
-
-  .share-buttons {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-
-  .share-btn {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1rem;
-    letter-spacing: 0.18em;
-    background: var(--yellow);
-    color: var(--black);
-    border: none;
-    padding: 0.55rem 1.2rem;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    border-radius: 2px;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-  }
-
-  .share-btn:hover {
-    background: var(--orange);
-    color: var(--white);
-  }
-
+  .card-item-name { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.2rem, 7vw, 3.8rem); line-height: 0.95; color: var(--white); margin-bottom: 0.5rem; }
+  .card-item-desc { font-size: 1rem; color: var(--white-dim); line-height: 1.55; }
+  .card-item-price { font-family: 'Space Mono', monospace; font-size: 0.85rem; color: var(--yellow); margin-top: 0.85rem; letter-spacing: 0.04em; }
+  .card-footer { border-top: 1px solid var(--border); padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; font-family: 'Space Mono', monospace; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--white-dim); }
+  .refresh-label { display: flex; align-items: center; gap: 0.4rem; }
+  .refresh-label svg { width: 13px; height: 13px; opacity: 0.4; }
+  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); margin-top: 2rem; border: 1px solid var(--border); }
+  .stat-cell { background: var(--black); padding: 1.1rem 0.75rem; text-align: center; }
+  .stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.75rem; color: var(--yellow); line-height: 1; }
+  .stat-lbl { font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--white-dim); margin-top: 0.35rem; line-height: 1.4; }
+  .past-section { margin-top: 2.5rem; }
+  .past-items { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); }
+  .past-item { background: var(--surface); padding: 1.25rem; }
+  .past-item .past-day { font-family: 'Space Mono', monospace; font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--white-dim); margin-bottom: 0.6rem; }
+  .past-item .past-emoji { font-size: 1.8rem; margin-bottom: 0.4rem; }
+  .past-item .past-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--white); line-height: 1.1; }
+  .past-item .past-cost { font-family: 'Space Mono', monospace; font-size: 0.75rem; color: var(--yellow); margin-top: 0.3rem; }
+  .share-bar { margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  .share-bar .tagline { font-family: 'Space Mono', monospace; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--white-dim); }
+  .share-buttons { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+  .share-btn { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.18em; background: var(--yellow); color: var(--black); border: none; padding: 0.55rem 1.2rem; cursor: pointer; transition: all 0.15s ease; border-radius: 2px; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; }
+  .share-btn:hover { background: var(--orange); color: var(--white); }
   .share-btn:active { transform: scale(0.97); }
-
   .share-btn.x { background: #000; color: var(--white); border: 1px solid rgba(255,255,255,0.15); }
   .share-btn.x:hover { background: #1a1a1a; border-color: rgba(255,255,255,0.3); }
-
   .share-btn.fb { background: #1877F2; color: #fff; }
   .share-btn.fb:hover { background: #0d65d9; }
-
   .share-btn.copy { background: var(--surface); color: var(--white); border: 1px solid var(--border); }
   .share-btn.copy:hover { background: var(--surface-2); border-color: rgba(255,255,255,0.15); }
-
   .share-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
-
-  /* ── Footer ── */
-  .footer {
-    margin-top: auto;
-    padding-top: 2.5rem;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.7rem;
-    color: rgba(255,255,255,0.15);
-    text-align: center;
-    line-height: 2;
-    letter-spacing: 0.03em;
-  }
-
-  .footer a {
-    color: rgba(255,255,255,0.25);
-    text-decoration: none;
-  }
-
+  .footer { margin-top: auto; padding-top: 2.5rem; font-family: 'Space Mono', monospace; font-size: 0.7rem; color: rgba(255,255,255,0.15); text-align: center; line-height: 2; letter-spacing: 0.03em; }
+  .footer a { color: rgba(255,255,255,0.25); text-decoration: none; }
   .footer a:hover { color: var(--orange); }
-
-  /* ── Price source badge ── */
-  .source-badge {
-    display: inline-block;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--green);
-    background: rgba(0, 230, 118, 0.08);
-    padding: 0.2rem 0.5rem;
-    border-radius: 2px;
-    border: 1px solid rgba(0, 230, 118, 0.15);
-  }
-
-  .source-badge.fallback {
-    color: var(--orange);
-    background: var(--orange-dim);
-    border-color: rgba(255, 107, 0, 0.2);
-  }
-
-  /* ── Responsive ── */
-  @media (max-width: 600px) {
-    .page { padding: 1rem; }
-    .card-body { flex-direction: column; gap: 0.75rem; }
-    .stats-grid { grid-template-columns: 1fr; }
-    .past-items { grid-template-columns: 1fr; }
-    .share-bar { flex-direction: column; text-align: center; }
-  }
-
-  /* ── Load animation ── */
-  .page > * {
-    opacity: 0;
-    transform: translateY(10px);
-    animation: rise 0.45s ease forwards;
-  }
-  .page > *:nth-child(1) { animation-delay: 0s; }
-  .page > *:nth-child(2) { animation-delay: 0.06s; }
-  .page > *:nth-child(3) { animation-delay: 0.1s; }
-  .page > *:nth-child(4) { animation-delay: 0.14s; }
-  .page > *:nth-child(5) { animation-delay: 0.18s; }
-  .page > *:nth-child(6) { animation-delay: 0.22s; }
-  .page > *:nth-child(7) { animation-delay: 0.26s; }
-  .page > *:nth-child(8) { animation-delay: 0.3s; }
-  .page > *:nth-child(9) { animation-delay: 0.34s; }
-
-  @keyframes rise {
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .page > * { opacity: 1; transform: none; animation: none; }
-    .topbar .pulse-dot { animation: none; }
-  }
+  .source-badge { display: inline-block; font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green); background: rgba(0, 230, 118, 0.08); padding: 0.2rem 0.5rem; border-radius: 2px; border: 1px solid rgba(0, 230, 118, 0.15); }
+  .source-badge.fallback { color: var(--orange); background: var(--orange-dim); border-color: rgba(255, 107, 0, 0.2); }
+  @media (max-width: 600px) { .page { padding: 1rem; } .card-body { flex-direction: column; gap: 0.75rem; } .stats-grid { grid-template-columns: 1fr; } .past-items { grid-template-columns: 1fr; } .share-bar { flex-direction: column; text-align: center; } }
+  .page > * { opacity: 0; transform: translateY(10px); animation: rise 0.45s ease forwards; }
+  .page > *:nth-child(1) { animation-delay: 0s; } .page > *:nth-child(2) { animation-delay: 0.06s; } .page > *:nth-child(3) { animation-delay: 0.1s; } .page > *:nth-child(4) { animation-delay: 0.14s; } .page > *:nth-child(5) { animation-delay: 0.18s; } .page > *:nth-child(6) { animation-delay: 0.22s; } .page > *:nth-child(7) { animation-delay: 0.26s; } .page > *:nth-child(8) { animation-delay: 0.3s; } .page > *:nth-child(9) { animation-delay: 0.34s; }
+  @keyframes rise { to { opacity: 1; transform: translateY(0); } }
+  @media (prefers-reduced-motion: reduce) { .page > * { opacity: 1; transform: none; animation: none; } .topbar .pulse-dot { animation: none; } }
 </style>
 </head>
 <body>
 <div class="bg-glow"></div>
-
 <div class="page">
-
-  <!-- Top bar -->
   <header class="topbar">
     <div><span class="pulse-dot"></span> <span id="liveDate">Loading…</span></div>
     <div id="sourceTag"></div>
   </header>
-
-  <!-- Hero price -->
   <div>
     <div class="section-label">Today, filling up a Toyota Camry costs you</div>
     <div class="hero-price" id="heroPrice">—</div>
-    <div class="hero-sub">
-      That's <strong id="litrePrice">—</strong> per litre × <strong>50 litres</strong>.<br>
-      Here's what else that money could get you.
-    </div>
+    <div class="hero-sub">That's <strong id="litrePrice">—</strong> per litre × <strong>50 litres</strong>.<br>Here's what else that money could get you.</div>
   </div>
-
-  <!-- Comparison card -->
   <div class="card">
     <div class="card-header">INSTEAD, YOU COULD BUY</div>
     <div class="card-body">
@@ -464,102 +121,44 @@
       </div>
     </div>
     <div class="card-footer">
-      <div class="refresh-label">
-        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 1 1 .908-.418A6 6 0 1 1 8 2v1z"/><path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/></svg>
-        New item every day
-      </div>
+      <div class="refresh-label"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 1 1 .908-.418A6 6 0 1 1 8 2v1z"/><path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/></svg> New item every day</div>
       <div id="dayCount"></div>
     </div>
   </div>
-
-  <!-- Stats -->
   <div class="stats-grid">
-    <div class="stat-cell">
-      <div class="stat-val" id="statWeekly">—</div>
-      <div class="stat-lbl">Per week<br>(2 fill-ups)</div>
-    </div>
-    <div class="stat-cell">
-      <div class="stat-val" id="statMonthly">—</div>
-      <div class="stat-lbl">Per month<br>(8 fill-ups)</div>
-    </div>
-    <div class="stat-cell">
-      <div class="stat-val" id="statYearly">—</div>
-      <div class="stat-lbl">Per year<br>(100 fill-ups)</div>
-    </div>
+    <div class="stat-cell"><div class="stat-val" id="statWeekly">—</div><div class="stat-lbl">Per week<br>(2 fill-ups)</div></div>
+    <div class="stat-cell"><div class="stat-val" id="statMonthly">—</div><div class="stat-lbl">Per month<br>(8 fill-ups)</div></div>
+    <div class="stat-cell"><div class="stat-val" id="statYearly">—</div><div class="stat-lbl">Per year<br>(100 fill-ups)</div></div>
   </div>
-
-  <!-- Past items -->
   <div class="past-section">
     <div class="section-label" style="margin-bottom:0.75rem">Previously on Fuel Reality Check</div>
     <div class="past-items">
-      <div class="past-item">
-        <div class="past-day" id="pastDay1Label">Yesterday</div>
-        <div class="past-emoji" id="pastDay1Emoji">—</div>
-        <div class="past-name" id="pastDay1Name">—</div>
-        <div class="past-cost" id="pastDay1Cost">—</div>
-      </div>
-      <div class="past-item">
-        <div class="past-day" id="pastDay2Label">Day before</div>
-        <div class="past-emoji" id="pastDay2Emoji">—</div>
-        <div class="past-name" id="pastDay2Name">—</div>
-        <div class="past-cost" id="pastDay2Cost">—</div>
-      </div>
+      <div class="past-item"><div class="past-day" id="pastDay1Label">Yesterday</div><div class="past-emoji" id="pastDay1Emoji">—</div><div class="past-name" id="pastDay1Name">—</div><div class="past-cost" id="pastDay1Cost">—</div></div>
+      <div class="past-item"><div class="past-day" id="pastDay2Label">Day before</div><div class="past-emoji" id="pastDay2Emoji">—</div><div class="past-name" id="pastDay2Name">—</div><div class="past-cost" id="pastDay2Cost">—</div></div>
     </div>
   </div>
-
-  <!-- Share -->
   <div class="share-bar">
     <div class="tagline">Fuel reality check — updated daily</div>
     <div class="share-buttons">
-      <a class="share-btn x" id="shareX" href="#" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-        POST ON X
-      </a>
-      <a class="share-btn fb" id="shareFB" href="#" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-        SHARE
-      </a>
-      <button class="share-btn copy" id="shareCopy" onclick="copyShare()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-        COPY
-      </button>
+      <a class="share-btn x" id="shareX" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg> POST ON X</a>
+      <a class="share-btn fb" id="shareFB" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg> SHARE</a>
+      <button class="share-btn copy" id="shareCopy" onclick="copyShare()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> COPY</button>
     </div>
   </div>
-
-  <!-- Footer -->
   <footer class="footer">
     Prices are indicative Brisbane metro averages for Unleaded 91.<br>
     Tank size: Toyota Camry (50L). Your mileage — and misery — may vary.<br>
     Not affiliated with any fuel company. Just annoyed.<br>
     <a href="https://www.mattb.com.au">Made by Matt Burgess</a>
   </footer>
-
 </div>
 
 <script>
-// ================================================================
-//  CONFIG
-// ================================================================
-
-// Your Cloudflare Worker URL — update after deploying
-const WORKER_URL = 'https://fuel-price-worker.matthew-edward-burgess.workers.dev/';  // e.g. 'https://fuel-price-worker.you.workers.dev'
-
-// Fallback if API is unavailable (update manually as needed)
-// Current real data: Brisbane ~239c/L estimated (AIP TGP calibrated, 23 Mar 2026)
-const FALLBACK_PRICE_CENTS = 235;  // $2.35/L
-
-// Tank size in litres
+const WORKER_URL = 'https://fuel-price-worker.matthew-edward-burgess.workers.dev/';
+const FALLBACK_PRICE_CENTS = 235;
 const TANK_LITRES = 50;
 
-// ================================================================
-//  ITEMS DATABASE — 100+ items, broadly $80–$125 AUD
-//
-//  Each item: { emoji, name, desc, price, tags[] }
-//  The site matches items within ±$3 of today's fill cost,
-//  then picks one deterministically based on day-of-year.
-// ================================================================
 const ITEMS = [
-  // ── FOOD & DRINK ──
   { emoji: "🦞", name: "Two Live Lobsters", desc: "From the fish market. You could be hosting a seafood feast, but instead you're idling at the bowser.", price: 95, tags: ["food"] },
   { emoji: "🧀", name: "4kg of Fancy Cheese", desc: "An absolutely reckless cheese board. Brie, gruyère, aged cheddar, blue — all gone in one tank.", price: 96, tags: ["food"] },
   { emoji: "🍷", name: "A Case of Wine", desc: "Twelve bottles of perfectly drinkable red. That's one for every 4.2 litres you just burned.", price: 100, tags: ["food"] },
@@ -580,8 +179,6 @@ const ITEMS = [
   { emoji: "🍝", name: "Pasta Making Class", desc: "Learn to make fresh pasta from a real Italian chef. Instead, you learned the price of 91 octane.", price: 95, tags: ["food","experience"] },
   { emoji: "🦐", name: "3kg of Tiger Prawns", desc: "Enough prawns for a legendary BBQ. The bowser doesn't even have a barbie.", price: 90, tags: ["food"] },
   { emoji: "🥖", name: "A Month of Sourdough", desc: "30 fresh loaves from the local baker. Instead, your car got fed and you got nothing.", price: 90, tags: ["food"] },
-
-  // ── ENTERTAINMENT ──
   { emoji: "🎬", name: "16 Movie Tickets", desc: "Take the whole family. Twice. With popcorn money left over. But nope — petrol.", price: 96, tags: ["entertainment"] },
   { emoji: "🎮", name: "A New Video Game", desc: "70+ hours of entertainment. Your tank gives you maybe 600km. Then it wants more.", price: 99, tags: ["entertainment"] },
   { emoji: "📚", name: "7 Bestselling Paperbacks", desc: "Enough reading material for months. Instead, you watched numbers on a bowser climb.", price: 98, tags: ["entertainment"] },
@@ -592,8 +189,6 @@ const ITEMS = [
   { emoji: "📺", name: "A Year of Streaming", desc: "12 months of Netflix or Stan. Instead, you got maybe 600km of road. No subtitles.", price: 95, tags: ["entertainment"] },
   { emoji: "🎧", name: "A Pair of Good Earbuds", desc: "Decent noise-cancelling buds to block out the world. Instead, you filled up to rejoin it.", price: 99, tags: ["entertainment"] },
   { emoji: "🕹️", name: "A Retro Game Console", desc: "Loaded with 500+ classic games. Hours of nostalgia. Instead: hours of commuting.", price: 89, tags: ["entertainment"] },
-
-  // ── HOBBIES & SPORT ──
   { emoji: "🎸", name: "A Beginner Ukulele", desc: "Learn 4 chords, play 1000 songs. But no — you chose 50 litres of refined dinosaur juice.", price: 89, tags: ["hobby"] },
   { emoji: "🪕", name: "A Banjo", desc: "A functioning entry-level banjo. You could learn bluegrass. Instead, you learned the price of unleaded.", price: 99, tags: ["hobby"] },
   { emoji: "🏋️", name: "A Month of Gym", desc: "30 days of getting fit. Instead, you're sitting in your car, getting nowhere fast.", price: 95, tags: ["hobby"] },
@@ -604,8 +199,6 @@ const ITEMS = [
   { emoji: "🏂", name: "A Ski Lift Day Pass", desc: "A full day on the mountain. Fresh powder, clear sky. Instead, you got fresh unleaded, clear wallet.", price: 99, tags: ["hobby"] },
   { emoji: "📷", name: "A Film Camera", desc: "A functioning vintage-style 35mm camera. Shoot a whole roll. Instead, you shot $100 at the bowser.", price: 95, tags: ["hobby"] },
   { emoji: "🧗", name: "10 Climbing Gym Sessions", desc: "A month of bouldering. Good for the arms, great for the soul. Petrol: bad for both.", price: 100, tags: ["hobby"] },
-
-  // ── HOME & GARDEN ──
   { emoji: "🌱", name: "An Entire Herb Garden Kit", desc: "Pots, soil, seeds — basil, rosemary, mint, thyme. Self-sustaining flavour. Instead: self-depleting fuel.", price: 85, tags: ["home"] },
   { emoji: "🪴", name: "A Fiddle Leaf Fig", desc: "The Instagram plant. It'll probably die, but at least it would've lasted longer than one tank.", price: 89, tags: ["home"] },
   { emoji: "💐", name: "Flowers Every Week for a Month", desc: "Four bouquets of fresh flowers. Your partner would've loved you more. The servo doesn't care.", price: 92, tags: ["home"] },
@@ -616,52 +209,38 @@ const ITEMS = [
   { emoji: "🖼️", name: "3 Framed Art Prints", desc: "Actual art for your actual walls. Instead, the only frame today is the fuel price on the pump display.", price: 90, tags: ["home"] },
   { emoji: "🧺", name: "Premium Laundry Setup", desc: "Nice detergent, fabric softener, dryer balls, stain remover — the works. Cleaner than your car's conscience.", price: 85, tags: ["home"] },
   { emoji: "🏡", name: "A Letterbox Makeover Kit", desc: "New letterbox, house numbers, solar light. Street cred for your front yard. Instead: zero cred at the bowser.", price: 95, tags: ["home"] },
-
-  // ── WELLNESS & SELF-CARE ──
   { emoji: "🧖", name: "A 90-Minute Spa Massage", desc: "Pure relaxation. Tension melting away. Instead, you felt the tension of watching the pump hit triple digits.", price: 99, tags: ["wellness"] },
   { emoji: "🦷", name: "A Dental Check-up & Clean", desc: "Protect your teeth for 6 months. Instead, you're protecting your commute for about a week.", price: 98, tags: ["wellness"] },
   { emoji: "🧴", name: "A Year of Sunscreen", desc: "12 bottles of SPF50+. Protect your skin for 365 days. Instead, you protected your commute for ~7.", price: 96, tags: ["wellness"] },
   { emoji: "💆", name: "3 Yoga Classes", desc: "Find your centre. Breathe deeply. Be present. Instead, you're present at a servo, breathing fumes.", price: 90, tags: ["wellness"] },
   { emoji: "🧘", name: "A Meditation App for 2 Years", desc: "730 days of guided calm. Your tank gives you about 7 days of transportation. Namaste, I guess.", price: 100, tags: ["wellness"] },
   { emoji: "🩺", name: "A Full Blood Panel", desc: "Check your cholesterol, iron, thyroid — everything. Know your body. Your car just wants to know your PIN.", price: 95, tags: ["wellness"] },
-
-  // ── PETS ──
   { emoji: "🐕", name: "6 Months of Dog Treats", desc: "Your dog would worship you. Actually they already do. They deserve better than a fuel receipt.", price: 90, tags: ["pets"] },
   { emoji: "🐈", name: "A Cat Tower Mansion", desc: "Six levels, three hidey-holes, sisal scratching posts. Your cat would ascend to royalty. But the car needs its juice.", price: 95, tags: ["pets"] },
   { emoji: "🐠", name: "An Aquarium Starter Kit", desc: "Fish tank, filter, gravel, fake coral. An entire underwater world — for the price of one fill-up.", price: 99, tags: ["pets"] },
   { emoji: "🐾", name: "A Dog Grooming Session", desc: "Full wash, clip, nail trim. Your dog would look magnificent. Instead, your car is the one being serviced.", price: 85, tags: ["pets"] },
   { emoji: "🦜", name: "A Budgie & Cage", desc: "A whole new pet. An actual living companion who sings. Instead, the only song was the beeping at the pump.", price: 95, tags: ["pets"] },
-
-  // ── FASHION & ACCESSORIES ──
   { emoji: "🩴", name: "3 Pairs of Havaianas", desc: "Enough thongs to outfit the whole household. Instead, you outfitted a combustion engine.", price: 90, tags: ["fashion"] },
   { emoji: "👟", name: "A Pair of Running Shoes", desc: "Decent ones, too — cushioned, lightweight, motivating. Instead, you're not running anywhere. You're driving.", price: 99, tags: ["fashion"] },
   { emoji: "🧢", name: "5 Quality Caps", desc: "One for every mood. Dad cap, trucker, snapback, bucket, sport. Instead, one tank of fuel. No vibes.", price: 90, tags: ["fashion"] },
   { emoji: "🕶️", name: "Polarised Sunglasses", desc: "Good ones — not the $15 servo pair. See the world clearly. Just not through the window of a cheap commute.", price: 95, tags: ["fashion"] },
   { emoji: "👜", name: "A Nice Weekender Bag", desc: "Canvas, leather trim, fits everything for a weekend away. Instead, you're not going anywhere — you just paid for the fuel to go.", price: 99, tags: ["fashion"] },
-
-  // ── KIDS ──
   { emoji: "🧸", name: "A Giant Teddy Bear", desc: "The absurdly large kind from the shops that nobody buys. Today, you could've been that person.", price: 89, tags: ["kids"] },
   { emoji: "🎢", name: "2 Theme Park Tickets", desc: "Roller coasters, fairy floss, someone else's screaming child. All more fun than bowser-related arithmetic.", price: 100, tags: ["kids","experience"] },
   { emoji: "🚲", name: "A Kids' Bike", desc: "First bike. Training wheels. The greatest gift of childhood. Instead, you gave your car its weekly feed.", price: 99, tags: ["kids"] },
   { emoji: "🏰", name: "A Massive LEGO Set", desc: "800+ pieces. Hours of building. A sense of accomplishment. Your fuel receipt provides none of these.", price: 100, tags: ["kids"] },
   { emoji: "🎠", name: "An Annual Zoo Pass", desc: "Unlimited visits to see actual animals for a whole year. Your car is the only animal that got fed today.", price: 99, tags: ["kids","experience"] },
-
-  // ── EXPERIENCES ──
   { emoji: "🎰", name: "100 Scratchie Tickets", desc: "Statistically you'd win… something. The petrol pump has a 100% win rate: it already has your money.", price: 100, tags: ["experience"] },
   { emoji: "🧗‍♀️", name: "A Treetop Adventure", desc: "Ziplines, rope bridges, harness. An afternoon of actual adventure. Instead: an afternoon in traffic.", price: 95, tags: ["experience"] },
   { emoji: "🚁", name: "A Helicopter Scenic Flight", desc: "Just kidding — but for the yearly cost of fuel, you could absolutely afford one. Think about that.", price: 99, tags: ["experience"] },
   { emoji: "🍳", name: "A Cooking Class", desc: "Learn Thai, Italian, or Japanese. Go home with new skills. Instead, you went home with 50 fewer litres of patience.", price: 95, tags: ["experience"] },
   { emoji: "🎭", name: "2 Theatre Tickets", desc: "Live performance, velvet seats, interval drinks. Culture. Instead: a screen showing cents per litre.", price: 100, tags: ["experience"] },
   { emoji: "🏖️", name: "A Day Spa Package", desc: "Sauna, pool, steam room, robe. A whole day of doing absolutely nothing. Instead, you did something — you paid for petrol.", price: 99, tags: ["experience"] },
-
-  // ── TECH & GADGETS ──
   { emoji: "🔋", name: "A 20,000mAh Power Bank", desc: "Charge your phone 5 times. Outlasts your car's range and your patience at the servo.", price: 89, tags: ["tech"] },
   { emoji: "💡", name: "Smart Bulbs for Your House", desc: "Colour-changing, voice-controlled, mood lighting. Instead, the only light you got was the bowser's LCD.", price: 90, tags: ["tech"] },
   { emoji: "⌨️", name: "A Mechanical Keyboard", desc: "Clicky, tactile, satisfying. Type angry tweets about fuel prices in style.", price: 99, tags: ["tech"] },
   { emoji: "📱", name: "A Phone Case & Screen Protector", desc: "The premium kind — MagSafe, drop-tested, tempered glass. Protecting your phone > protecting your commute.", price: 85, tags: ["tech"] },
   { emoji: "🖨️", name: "A Decent Printer", desc: "Print photos, documents, passive-aggressive notes to your neighbours. Instead, you got a receipt.", price: 95, tags: ["tech"] },
-
-  // ── RANDOM & ABSURD ──
   { emoji: "🧲", name: "150 Fridge Magnets", desc: "From every tourist trap on the planet. You could cover your entire fridge. Instead, the pump covered your wallet.", price: 90, tags: ["absurd"] },
   { emoji: "🪣", name: "200 Bouncy Balls", desc: "No practical use whatsoever, and still a better investment than 50 litres of fuel.", price: 85, tags: ["absurd"] },
   { emoji: "🎈", name: "500 Helium Balloons", desc: "Enough to make your house slightly more buoyant. More uplifting than today's fuel price, anyway.", price: 90, tags: ["absurd"] },
@@ -677,13 +256,9 @@ const ITEMS = [
   { emoji: "🧂", name: "50kg of Himalayan Salt", desc: "More salt than any human needs. Less salt than you feel about paying $2+ per litre.", price: 90, tags: ["absurd"] },
   { emoji: "🪠", name: "25 Premium Plungers", desc: "One for every room in a house you definitely don't have. But it's still a more rational purchase.", price: 88, tags: ["absurd"] },
   { emoji: "🧻", name: "A Year of Toilet Paper", desc: "96 rolls. The 2020 panic-buyers were onto something. More useful than 50 litres that'll be gone by Friday.", price: 95, tags: ["absurd"] },
-
-  // ── CHARITABLE ──
   { emoji: "❤️", name: "30 Meals for Someone in Need", desc: "Thirty meals at a food bank. Real impact, real kindness. Instead, all that money went to… the bowser.", price: 90, tags: ["charity"] },
   { emoji: "🌳", name: "10 Trees Planted", desc: "Through a reforestation charity. Real trees, real impact, real shade in 20 years. The car just produces CO₂.", price: 100, tags: ["charity"] },
   { emoji: "📦", name: "A Care Package Overseas", desc: "School supplies, hygiene products, and toys for a child in need. Instead, your sedan got its weekly fix.", price: 95, tags: ["charity"] },
-
-  // ── HIGHER PRICE ITEMS ($105–$130) — for when fill-ups are $100+ ──
   { emoji: "🍱", name: "A Week of Meal Delivery", desc: "Five nights of restaurant-quality dinners delivered to your door. Instead, your car ate the budget.", price: 110, tags: ["food"] },
   { emoji: "🎿", name: "Ski Gear Rental for the Weekend", desc: "Boots, skis, poles, jacket — the whole kit for two days on the mountain. Instead, two minutes at the pump.", price: 115, tags: ["experience"] },
   { emoji: "🧬", name: "A DNA Ancestry Kit", desc: "Find out where your ancestors came from. The only thing the bowser tells you is where your money went.", price: 119, tags: ["tech"] },
@@ -698,73 +273,51 @@ const ITEMS = [
   { emoji: "🐶", name: "A Dog DNA Test", desc: "Finally find out if your rescue is part kelpie or part mystery. The bowser remains 100% pain.", price: 109, tags: ["pets"] },
   { emoji: "🪑", name: "An Ergonomic Desk Chair", desc: "Lumbar support. Adjustable armrests. Comfort for 8 hours a day. Instead, discomfort for 3 minutes at the bowser.", price: 120, tags: ["home"] },
   { emoji: "🎁", name: "Christmas Sorted for One Kid", desc: "Main present, stocking stuffers, wrapping paper. A child's entire Christmas morning — or one tank of fuel.", price: 110, tags: ["kids"] },
-
-  // ── GAP FILLERS: $91–$93 ──
   { emoji: "🫕", name: "A Fondue Set + Cheese", desc: "The pot, the forks, a kilo of gruyère. A whole evening of melted cheese and conversation. Instead, melted savings.", price: 92, tags: ["food"] },
   { emoji: "🧲", name: "A Metal Detector", desc: "Entry-level, but functional. You could find buried treasure at the beach. Instead, you buried $92 at the bowser.", price: 92, tags: ["hobby"] },
   { emoji: "🎯", name: "A Dartboard + Darts Set", desc: "Professional bristle board, cabinet mount, two sets of tungsten darts. Hours of pub vibes at home.", price: 91, tags: ["hobby"] },
   { emoji: "🧊", name: "An Esky Full of Steaks", desc: "Twelve premium steaks packed in ice. Enough for a month of BBQs. Instead, you fuelled the car, not the barbie.", price: 93, tags: ["food"] },
-
-  // ── GAP FILLERS: $103–$108 ──
   { emoji: "🪵", name: "A Fire Pit", desc: "Steel bowl, mesh lid, poker. Backyard fire nights all winter. Instead, you burned money at the servo.", price: 105, tags: ["home"] },
   { emoji: "🎹", name: "A MIDI Keyboard", desc: "25 keys, USB-powered, make actual music. Instead, the only keys you used today were the ones in the ignition.", price: 107, tags: ["hobby"] },
   { emoji: "🏕️", name: "A 4-Person Tent", desc: "Waterproof, easy-pitch, fits the family. A weekend escape. Instead, you're trapped at the Caltex.", price: 106, tags: ["hobby"] },
   { emoji: "🥘", name: "A Month of HelloFresh", desc: "Four weeks of meal kits delivered to your door. Instead, you delivered yourself to the petrol station.", price: 104, tags: ["food"] },
   { emoji: "🖥️", name: "A Second Monitor", desc: "21-inch, 1080p, doubles your productivity. Instead, you doubled your pain watching the pump tick up.", price: 108, tags: ["tech"] },
-
-  // ── GAP FILLERS: $112–$114 ──
   { emoji: "🎿", name: "A Season of Ski Wax", desc: "Just kidding — it's a full snowboard tune-up, edges sharpened, base repaired. Your tank got tuned up instead.", price: 113, tags: ["hobby"] },
   { emoji: "🍽️", name: "Dinner for Two at a Nice Restaurant", desc: "Three courses, a bottle of wine, dessert. A proper date night. Instead, a date with the BP.", price: 112, tags: ["food"] },
   { emoji: "🧪", name: "A Home Brew Kit", desc: "Fermenter, bottles, ingredients for 30 litres of beer. Thirty litres of joy vs fifty litres of unleaded.", price: 114, tags: ["hobby"] },
   { emoji: "🛋️", name: "A Weighted Blanket", desc: "9kg of calming pressure. Like a hug that lasts all night. The bowser's hug lasted 3 minutes and cost $113.", price: 113, tags: ["home"] },
-
-  // ── GAP FILLERS: $121–$126 ──
   { emoji: "🧳", name: "A Carry-On Suitcase", desc: "Hard shell, spinner wheels, TSA lock. Go somewhere. Instead, the only trip you took was to the servo.", price: 122, tags: ["fashion"] },
   { emoji: "🎧", name: "Noise-Cancelling Headphones", desc: "Over-ear, 30-hour battery, ANC. Block out the world — starting with the sound of the fuel pump.", price: 124, tags: ["tech"] },
   { emoji: "🍖", name: "A Whole Smoked Brisket", desc: "5kg, 12-hour low-and-slow, delivered ready to eat. Feeds 15 people. Your car feeds zero people.", price: 121, tags: ["food"] },
   { emoji: "🏠", name: "A Robot Vacuum", desc: "It cleans your floors while you sleep. Your fuel receipt cleans out your wallet while you watch.", price: 125, tags: ["home"] },
-
-  // ── $127–$132 ──
   { emoji: "🛶", name: "A Kayak Rental Weekend", desc: "Two full days on the water with gear. Paddle somewhere beautiful. Instead, you drove somewhere expensive.", price: 128, tags: ["experience"] },
   { emoji: "🎺", name: "A Saxophone Lesson Package", desc: "Four one-hour lessons with a pro. Learn jazz. Instead, the only blues you got were at the pump.", price: 130, tags: ["hobby"] },
   { emoji: "🍳", name: "A Premium Cookware Set", desc: "Stainless steel pan, cast iron skillet, Dutch oven. Cook for years. Your fuel lasts a week.", price: 129, tags: ["home"] },
   { emoji: "🧖‍♂️", name: "A Couples Spa Day", desc: "Two people, robes, sauna, massage. Pure relaxation. Instead, pure frustration at the bowser.", price: 130, tags: ["experience"] },
   { emoji: "📸", name: "A Photo Canvas Print", desc: "Your best holiday photo, 60x90cm, gallery-wrapped. Hangs on the wall forever. Fuel hangs around for a week.", price: 127, tags: ["home"] },
-
-  // ── $133–$138 ──
   { emoji: "🎸", name: "An Electric Guitar", desc: "Entry-level Squier or Yamaha. Plug in, turn up, annoy the neighbours. Better than annoying yourself at the pump.", price: 135, tags: ["hobby"] },
   { emoji: "🧥", name: "A Quality Winter Jacket", desc: "Waterproof, insulated, looks sharp. Keeps you warm all winter. Your fuel receipt just gives you cold sweats.", price: 136, tags: ["fashion"] },
   { emoji: "🫖", name: "A Japanese Tea Ceremony Set", desc: "Matcha bowl, whisk, scoop, and a month of premium matcha. Inner peace. The opposite of a fuel station.", price: 134, tags: ["home"] },
   { emoji: "🍰", name: "A Baking Course", desc: "Six weeks of professional pastry classes. Croissants, sourdough, tarts. The only rising you saw today was the price.", price: 137, tags: ["experience"] },
-
-  // ── $139–$144 ──
   { emoji: "🚴", name: "A Bike Service + New Tyres", desc: "Full tune-up, new rubber, brake adjustment. Zero fuel cost transport for months. Instead, you fed the car.", price: 140, tags: ["hobby"] },
   { emoji: "🎭", name: "Two Theatre Tickets + Dinner", desc: "A proper night out — live show, pre-theatre meal, interval drinks. Culture. Instead, you got a servo receipt.", price: 142, tags: ["experience"] },
   { emoji: "🧬", name: "A Full Health Check-up", desc: "Blood panel, heart screen, skin check. Know your body. Your car knows your wallet better.", price: 141, tags: ["wellness"] },
   { emoji: "📦", name: "A Month of All Your Subscriptions", desc: "Netflix, Spotify, gym, cloud storage, news — every single subscription for a month. Or one tank.", price: 139, tags: ["entertainment"] },
   { emoji: "🪑", name: "A Standing Desk Converter", desc: "Sit-stand, adjustable, fits on your existing desk. Better posture for months. Fuel gives you nothing for weeks.", price: 143, tags: ["home"] },
-
-  // ── $145–$150 ──
   { emoji: "🐕‍🦺", name: "A Dog Training Course", desc: "Six-week obedience program. A well-behaved dog for life. Instead, a well-fed car for about ten days.", price: 145, tags: ["pets"] },
   { emoji: "🏄‍♂️", name: "A Wetsuit", desc: "3/2mm, fits like a glove, lasts for years of surf sessions. Zero fuel required. Maximum stoke.", price: 148, tags: ["hobby"] },
   { emoji: "🍷", name: "A Wine Tasting Weekend", desc: "Two people, five wineries, cheese platters, designated driver. Instead, you were the driver. At the servo.", price: 150, tags: ["experience"] },
   { emoji: "🧱", name: "1,500 Piece LEGO Set", desc: "A display-worthy build — architecture, space shuttle, or botanical. 20 hours of focus. Fuel gives you 20 minutes of driving.", price: 146, tags: ["hobby"] },
   { emoji: "💻", name: "A Refurbished iPad", desc: "Previous gen, works perfectly, watch movies, read books, draw. Instead, you watched numbers go up at the pump.", price: 149, tags: ["tech"] },
-
-  // ── $151–$156 ──
   { emoji: "🎤", name: "A Karaoke Machine", desc: "Bluetooth speaker, two wireless mics, disco lights. Own the party. Own the shame. Still better than owning a fuel bill.", price: 152, tags: ["entertainment"] },
   { emoji: "🏋️‍♀️", name: "A Set of Adjustable Dumbbells", desc: "5–25kg each, replaces 10 pairs of dumbbells. A home gym starter. The only heavy thing should be your lifts, not your fuel bill.", price: 155, tags: ["hobby"] },
   { emoji: "🧳", name: "A Weekend Away (Accommodation)", desc: "Two nights in a cabin or Airbnb within driving distance. Wait — you'd need more fuel. The irony writes itself.", price: 153, tags: ["experience"] },
   { emoji: "🎂", name: "Catering for a Kids' Party", desc: "Food, cake, decorations for 15 kids. An entire birthday party. Instead, a deeply unspecial trip to the bowser.", price: 151, tags: ["kids"] },
-
-  // ── $157–$160 ──
   { emoji: "🖼️", name: "A Custom Portrait Commission", desc: "A local artist paints you, your family, or your pet. Art that lasts forever. Fuel that lasts until next Tuesday.", price: 158, tags: ["home"] },
   { emoji: "🎓", name: "An Online Course Certificate", desc: "A Coursera or Udemy professional cert. Advance your career. Instead, you advanced to the next price tier at the pump.", price: 159, tags: ["experience"] },
   { emoji: "🏖️", name: "A Family Day at a Water Park", desc: "Four tickets, lunch, locker rental. Slides, wave pools, sunburn. A memory that lasts longer than a tank of fuel.", price: 160, tags: ["kids"] },
   { emoji: "🎻", name: "A Violin", desc: "A genuine student violin with bow and case. Learn an instrument that runs on rosin, not unleaded.", price: 157, tags: ["hobby"] },
   { emoji: "🍕", name: "Pizza for the Entire Office", desc: "25 large pizzas. Enough to feed 50 people. You'd be a hero at work. Instead, you're a customer at the servo.", price: 160, tags: ["food"] },
-
-  // ── REMAINING GAP FILLERS ──
   { emoji: "🧴", name: "A Skincare Routine Starter Kit", desc: "Cleanser, serum, moisturiser, SPF — the good brands. Your skin would glow. Instead, only the pump display glows.", price: 103, tags: ["wellness"] },
   { emoji: "🪶", name: "A Memory Foam Pillow Set", desc: "Two premium pillows. Better sleep every single night. Your fuel gives you better commutes for about a week.", price: 102, tags: ["home"] },
   { emoji: "🎃", name: "A Full Halloween Setup", desc: "Fog machine, decorations, costumes for two. The scariest thing this year is still the fuel price.", price: 104, tags: ["entertainment"] },
@@ -782,138 +335,76 @@ const ITEMS = [
   { emoji: "🎵", name: "A Year of Spotify Family", desc: "Six accounts, unlimited music, no ads, for 12 months. A year of joy — or a single trip to the bowser.", price: 156, tags: ["entertainment"] },
 ];
 
-
-// ================================================================
-//  LOGIC
-// ================================================================
-
-function getDayOfYear(d) {
-  const start = new Date(d.getFullYear(), 0, 0);
-  return Math.floor((d - start) / 864e5);
-}
-
-function seeded(seed) {
-  let x = Math.sin(seed) * 10000;
-  return x - Math.floor(x);
-}
-
-function simPrice(dayOffset) {
-  const d = new Date();
-  d.setDate(d.getDate() - dayOffset);
-  const seed = d.getFullYear() * 1000 + getDayOfYear(d);
-  return FALLBACK_PRICE_CENTS + (seeded(seed) - 0.5) * 24;
-}
+function getDayOfYear(d) { const start = new Date(d.getFullYear(), 0, 0); return Math.floor((d - start) / 864e5); }
+function seeded(seed) { let x = Math.sin(seed) * 10000; return x - Math.floor(x); }
+function simPrice(dayOffset) { const d = new Date(); d.setDate(d.getDate() - dayOffset); const seed = d.getFullYear() * 1000 + getDayOfYear(d); return FALLBACK_PRICE_CENTS + (seeded(seed) - 0.5) * 24; }
 
 function pickItem(dayOffset, priceCents) {
-  const d = new Date();
-  d.setDate(d.getDate() - dayOffset);
+  const d = new Date(); d.setDate(d.getDate() - dayOffset);
   const doy = getDayOfYear(d);
   const fillCost = (priceCents / 100) * TANK_LITRES;
-
-  // Try tight match first (±$3), widen only if needed
   let pool;
-  for (const range of [3, 6, 10, 20]) {
-    pool = ITEMS.filter(i => Math.abs(i.price - fillCost) <= range);
-    if (pool.length >= 3) break;
-  }
+  for (const range of [3, 6, 10, 20]) { pool = ITEMS.filter(i => Math.abs(i.price - fillCost) <= range); if (pool.length >= 3) break; }
   if (pool.length < 3) pool = ITEMS;
-
-  // Deterministic pick based on day
   const idx = Math.floor(seeded(doy * 7 + 3) * pool.length);
   return pool[idx];
 }
 
 function $(id) { return document.getElementById(id); }
-
-function fmtDollars(n) {
-  return '$' + n.toLocaleString('en-AU', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-}
+function fmtDollars(n) { return '$' + n.toLocaleString('en-AU', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
 
 async function fetchLivePrice() {
   if (!WORKER_URL) return null;
-  try {
-    const r = await fetch(WORKER_URL, { signal: AbortSignal.timeout(4000) });
-    const d = await r.json();
-    if (d.price_cents_per_litre) {
-      return { cents: d.price_cents_per_litre, source: d.source || 'live' };
-    }
-    return null;
-  } catch { return null; }
+  try { const r = await fetch(WORKER_URL, { signal: AbortSignal.timeout(4000) }); const d = await r.json(); if (d.price_cents_per_litre) return { cents: d.price_cents_per_litre, source: d.source || 'live' }; return null; } catch { return null; }
 }
 
 async function init() {
   const today = new Date();
-
-  // Try live price, fall back to simulated
   const liveData = await fetchLivePrice();
   let priceCents = liveData ? liveData.cents : null;
   let source = liveData ? liveData.source : 'simulated';
   if (!priceCents) { priceCents = simPrice(0); source = 'simulated'; }
-
   const pricePerLitre = priceCents / 100;
   const fillCost = pricePerLitre * TANK_LITRES;
 
-  // Date
-  $('liveDate').textContent = today.toLocaleDateString('en-AU', {
-    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-  });
+  $('liveDate').textContent = today.toLocaleDateString('en-AU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
-  // Source badge
-  const badgeMap = {
-    'aip-daily-calibrated': ['Daily price', ''],
-    'aip-tgp-estimated': ['Daily estimate', ''],
-    'aip-retail-weekly': ['Weekly avg', ''],
-    'fallback': ['Estimated', 'fallback'],
-    'simulated': ['Estimated', 'fallback'],
-  };
+  const badgeMap = { 'aip-daily-calibrated': ['Daily price', ''], 'aip-tgp-estimated': ['Daily estimate', ''], 'aip-retail-weekly': ['Weekly avg', ''], 'fallback': ['Estimated', 'fallback'], 'simulated': ['Estimated', 'fallback'] };
   const [badgeText, badgeClass] = badgeMap[source] || ['Live', ''];
   $('sourceTag').innerHTML = `<span class="source-badge ${badgeClass}">${badgeText}</span>`;
 
-  // Hero price
   const whole = Math.floor(fillCost);
   const cents = Math.round((fillCost - whole) * 100).toString().padStart(2, '0');
   $('heroPrice').innerHTML = `$${whole}<span class="sup">.${cents}</span>`;
-
-  // Litre price
   $('litrePrice').textContent = `$${pricePerLitre.toFixed(3)}`;
 
-  // Today's item
   const item = pickItem(0, priceCents);
   $('todayEmoji').textContent = item.emoji;
   $('todayName').textContent = item.name;
   $('todayDesc').textContent = item.desc;
   $('todayPrice').textContent = `≈ $${item.price} — roughly what you just spent on fuel`;
-
-  // Day count (days since 1 Jan of current year)
   $('dayCount').textContent = `Day #${getDayOfYear(today)} of ${today.getFullYear()}`;
 
-  // Stats
   $('statWeekly').textContent = fmtDollars(fillCost * 2);
   $('statMonthly').textContent = fmtDollars(fillCost * 8);
   $('statYearly').textContent = fmtDollars(fillCost * 100);
 
-  // Past items
   const isLive = source !== 'simulated';
   for (let i = 1; i <= 2; i++) {
     const pastPrice = isLive ? priceCents + (seeded(getDayOfYear(today) - i) - 0.5) * 10 : simPrice(i);
     const pastItem = pickItem(i, pastPrice);
-    const pastDate = new Date();
-    pastDate.setDate(pastDate.getDate() - i);
+    const pastDate = new Date(); pastDate.setDate(pastDate.getDate() - i);
     $(`pastDay${i}Label`).textContent = pastDate.toLocaleDateString('en-AU', { weekday: 'long' });
     $(`pastDay${i}Emoji`).textContent = pastItem.emoji;
     $(`pastDay${i}Name`).textContent = pastItem.name;
     const pastFill = (pastPrice / 100) * TANK_LITRES;
     $(`pastDay${i}Cost`).textContent = `$${pastFill.toFixed(0)} fill-up → $${pastItem.price} item`;
   }
-
 }
 
 function getShareText() {
   const name = $('todayName').textContent;
   const price = $('heroPrice').textContent;
-  const fillCost = price.replace(/[^0-9.]/g, '');
-
-  // Rotate between a few share formats for variety
   const doy = getDayOfYear(new Date());
   const variants = [
     `${price} to fill a Toyota Camry today.\n\nFor that money I could've bought ${name.toLowerCase()}.\n\nThis country is cooked. ⛽🔥`,
@@ -924,26 +415,15 @@ function getShareText() {
   return variants[doy % variants.length];
 }
 
-function getShareUrl() {
-  return window.location.origin + window.location.pathname;
-}
+function getShareUrl() { return window.location.origin + window.location.pathname; }
 
 function updateShareLinks() {
   const text = getShareText();
   const url = getShareUrl();
-
   const xLink = $('shareX');
   const fbLink = $('shareFB');
-
-  if (xLink) {
-    const xUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
-    xLink.href = xUrl;
-  }
-
-  if (fbLink) {
-    const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
-    fbLink.href = fbUrl;
-  }
+  if (xLink) xLink.href = `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+  if (fbLink) fbLink.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
 }
 
 function copyShare() {
@@ -956,13 +436,8 @@ function copyShare() {
   });
 }
 
-// Update share links after data loads
 const _origInit = init;
-init = async function() {
-  await _origInit();
-  updateShareLinks();
-};
-
+init = async function() { await _origInit(); updateShareLinks(); };
 init();
 </script>
 </body>
