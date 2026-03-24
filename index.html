@@ -87,7 +87,31 @@
   .footer a:hover { color: var(--orange); }
   .source-badge { display: inline-block; font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green); background: rgba(0, 230, 118, 0.08); padding: 0.2rem 0.5rem; border-radius: 2px; border: 1px solid rgba(0, 230, 118, 0.15); }
   .source-badge.fallback { color: var(--orange); background: var(--orange-dim); border-color: rgba(255, 107, 0, 0.2); }
-  @media (max-width: 600px) { .page { padding: 1rem; } .card-body { flex-direction: column; gap: 0.75rem; } .stats-grid { grid-template-columns: 1fr; } .past-items { grid-template-columns: 1fr; } .share-bar { flex-direction: column; text-align: center; } }
+  /* Inline Car Dropdown */
+  .car-dropdown-wrap { position: relative; display: inline-block; z-index: 100; }
+  .car-dropdown-trigger { display: inline-flex; align-items: center; gap: 0.35rem; background: none; border: none; border-bottom: 1.5px dashed var(--yellow); padding: 0 0 1px; cursor: pointer; font-family: inherit; font-size: inherit; letter-spacing: inherit; text-transform: inherit; color: var(--yellow); line-height: inherit; transition: border-color 0.2s; }
+  .car-dropdown-trigger:hover { border-bottom-color: var(--white); color: var(--white); }
+  .car-dropdown-trigger svg { width: 10px; height: 7px; flex-shrink: 0; stroke: currentColor; transition: transform 0.25s ease; }
+  .car-dropdown-trigger.open svg { transform: rotate(180deg); }
+  .car-dropdown { position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%); width: 300px; background: var(--surface); border: 1px solid var(--border); border-radius: 3px; box-shadow: 0 12px 40px rgba(0,0,0,0.6); display: none; }
+  .car-dropdown.open { display: block; animation: dropIn 0.2s ease; }
+  @keyframes dropIn { from { opacity: 0; transform: translateX(-50%) translateY(-6px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+  .car-dropdown .car-search { width: 100%; background: var(--black); border: none; border-bottom: 1px solid var(--border); color: var(--white); font-family: 'Libre Franklin', sans-serif; font-size: 0.85rem; padding: 0.6rem 0.75rem; outline: none; border-radius: 3px 3px 0 0; }
+  .car-dropdown .car-search::placeholder { color: #5a564f; }
+  .car-list { max-height: 280px; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; scrollbar-width: thin; scrollbar-color: var(--surface-2) var(--black); }
+  .car-list::-webkit-scrollbar { width: 5px; }
+  .car-list::-webkit-scrollbar-track { background: var(--black); }
+  .car-list::-webkit-scrollbar-thumb { background: var(--surface-2); border-radius: 3px; }
+  .car-option { padding: 0.5rem 0.75rem; cursor: pointer; transition: background 0.12s; display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .car-option:last-child { border-bottom: none; }
+  .car-option:hover { background: var(--surface-2); }
+  .car-option.selected { background: var(--orange-dim); }
+  .car-option .car-name { font-family: 'Libre Franklin', sans-serif; font-size: 0.82rem; font-weight: 600; color: var(--white); white-space: nowrap; }
+  .car-option .car-meta { font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.04em; color: var(--white-dim); white-space: nowrap; text-align: right; }
+  .car-option.selected .car-name { color: var(--orange); }
+  .car-option.selected .car-meta { color: var(--orange); }
+  .car-no-results { padding: 1.25rem 0.75rem; text-align: center; font-family: 'Space Mono', monospace; font-size: 0.75rem; color: var(--white-dim); }
+  @media (max-width: 600px) { .page { padding: 1rem; } .card-body { flex-direction: column; gap: 0.75rem; } .stats-grid { grid-template-columns: 1fr; } .past-items { grid-template-columns: 1fr; } .share-bar { flex-direction: column; text-align: center; } .car-dropdown { width: 260px; left: 0; transform: translateX(0); } @keyframes dropIn { from { opacity: 0; transform: translateX(0) translateY(-6px); } to { opacity: 1; transform: translateX(0) translateY(0); } } }
   .page > * { opacity: 0; transform: translateY(10px); animation: rise 0.45s ease forwards; }
   .page > *:nth-child(1) { animation-delay: 0s; } .page > *:nth-child(2) { animation-delay: 0.06s; } .page > *:nth-child(3) { animation-delay: 0.1s; } .page > *:nth-child(4) { animation-delay: 0.14s; } .page > *:nth-child(5) { animation-delay: 0.18s; } .page > *:nth-child(6) { animation-delay: 0.22s; } .page > *:nth-child(7) { animation-delay: 0.26s; } .page > *:nth-child(8) { animation-delay: 0.3s; } .page > *:nth-child(9) { animation-delay: 0.34s; }
   @keyframes rise { to { opacity: 1; transform: translateY(0); } }
@@ -102,9 +126,21 @@
     <div id="sourceTag"></div>
   </header>
   <div>
-    <div class="section-label">Today, filling up a Toyota Camry costs you</div>
+    <div class="section-label">Today, filling up
+      <span class="car-dropdown-wrap" id="carDropdownWrap">
+        <button class="car-dropdown-trigger" id="carTrigger" onclick="toggleCarDropdown(event)">
+          <span id="heroCarLabel">a Toyota Camry</span>
+          <svg viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1.5l5 5 5-5"/></svg>
+        </button>
+        <div class="car-dropdown" id="carDropdown">
+          <input type="text" class="car-search" id="carSearch" placeholder="Search cars…" oninput="filterCars()" autocomplete="off">
+          <div class="car-list" id="carGrid"></div>
+        </div>
+      </span>
+      costs you
+    </div>
     <div class="hero-price" id="heroPrice">—</div>
-    <div class="hero-sub">That's <strong id="litrePrice">—</strong> per litre × <strong>50 litres</strong>.<br>Here's what else that money could get you.</div>
+    <div class="hero-sub">That's <strong id="litrePrice">—</strong> per litre × <strong id="heroTankLabel">50 litres</strong>.<br>Here's what else that money could get you.</div>
   </div>
   <div class="card">
     <div class="card-header">INSTEAD, YOU COULD BUY</div>
@@ -143,7 +179,7 @@
   </div>
   <footer class="footer">
     Prices are indicative Brisbane metro averages for Unleaded 91.<br>
-    Tank size: Toyota Camry (50L). Your mileage — and misery — may vary.<br>
+    Tank size: <span id="footerCarLabel">Toyota Camry (50L)</span>. Your mileage — and misery — may vary.<br>
     Not affiliated with any fuel company. Just annoyed.<br>
     <a href="https://www.mattb.com.au">Made by Matt Burgess</a>
   </footer>
@@ -152,7 +188,60 @@
 <script>
 const WORKER_URL = 'https://fuel-price-worker.matthew-edward-burgess.workers.dev/';
 const FALLBACK_PRICE_CENTS = 235;
-const TANK_LITRES = 50;
+let TANK_LITRES = 50;
+let SELECTED_CAR = 'toyota-camry';
+
+const CARS = [
+  // — Utes —
+  { id: 'ford-ranger', name: 'Ford Ranger', tank: 80, type: 'Ute', fuel: 'Diesel' },
+  { id: 'toyota-hilux', name: 'Toyota HiLux', tank: 80, type: 'Ute', fuel: 'Diesel' },
+  { id: 'isuzu-d-max', name: 'Isuzu D-Max', tank: 76, type: 'Ute', fuel: 'Diesel' },
+  { id: 'mazda-bt-50', name: 'Mazda BT-50', tank: 76, type: 'Ute', fuel: 'Diesel' },
+  { id: 'mitsubishi-triton', name: 'Mitsubishi Triton', tank: 75, type: 'Ute', fuel: 'Diesel' },
+  { id: 'nissan-navara', name: 'Nissan Navara', tank: 80, type: 'Ute', fuel: 'Diesel' },
+  { id: 'gwm-ute-cannon', name: 'GWM Ute Cannon', tank: 80, type: 'Ute', fuel: 'Diesel' },
+  // — Large SUVs —
+  { id: 'ford-everest', name: 'Ford Everest', tank: 80, type: 'Large SUV', fuel: 'Diesel' },
+  { id: 'toyota-prado', name: 'Toyota Prado', tank: 80, type: 'Large SUV', fuel: 'Diesel' },
+  { id: 'toyota-landcruiser', name: 'Toyota LandCruiser', tank: 110, type: 'Large SUV', fuel: 'Diesel' },
+  { id: 'isuzu-mu-x', name: 'Isuzu MU-X', tank: 80, type: 'Large SUV', fuel: 'Diesel' },
+  { id: 'mitsubishi-pajero-sport', name: 'Mitsubishi Pajero Sport', tank: 68, type: 'Large SUV', fuel: 'Diesel' },
+  // — Medium SUVs —
+  { id: 'toyota-rav4', name: 'Toyota RAV4', tank: 55, type: 'Medium SUV', fuel: 'Petrol/Hybrid' },
+  { id: 'mazda-cx-5', name: 'Mazda CX-5', tank: 56, type: 'Medium SUV', fuel: 'Petrol' },
+  { id: 'mitsubishi-outlander', name: 'Mitsubishi Outlander', tank: 56, type: 'Medium SUV', fuel: 'Petrol/Hybrid' },
+  { id: 'hyundai-tucson', name: 'Hyundai Tucson', tank: 54, type: 'Medium SUV', fuel: 'Petrol/Hybrid' },
+  { id: 'kia-sportage', name: 'Kia Sportage', tank: 54, type: 'Medium SUV', fuel: 'Petrol' },
+  { id: 'subaru-forester', name: 'Subaru Forester', tank: 63, type: 'Medium SUV', fuel: 'Petrol/Hybrid' },
+  { id: 'nissan-x-trail', name: 'Nissan X-Trail', tank: 55, type: 'Medium SUV', fuel: 'Petrol' },
+  { id: 'subaru-outback', name: 'Subaru Outback', tank: 63, type: 'Medium SUV', fuel: 'Petrol' },
+  { id: 'tesla-model-y', name: 'Tesla Model Y', tank: 0, type: 'Medium SUV', fuel: 'Electric ⚡' },
+  { id: 'haval-jolion', name: 'Haval Jolion', tank: 55, type: 'Medium SUV', fuel: 'Petrol/Hybrid' },
+  // — Small SUVs —
+  { id: 'hyundai-kona', name: 'Hyundai Kona', tank: 47, type: 'Small SUV', fuel: 'Petrol/Hybrid' },
+  { id: 'mg-zs', name: 'MG ZS', tank: 50, type: 'Small SUV', fuel: 'Petrol' },
+  { id: 'kia-seltos', name: 'Kia Seltos', tank: 50, type: 'Small SUV', fuel: 'Petrol' },
+  { id: 'toyota-yaris-cross', name: 'Toyota Yaris Cross', tank: 36, type: 'Small SUV', fuel: 'Petrol/Hybrid' },
+  { id: 'mazda-cx-3', name: 'Mazda CX-3', tank: 48, type: 'Small SUV', fuel: 'Petrol' },
+  { id: 'honda-hr-v', name: 'Honda HR-V', tank: 40, type: 'Small SUV', fuel: 'Petrol/Hybrid' },
+  { id: 'hyundai-venue', name: 'Hyundai Venue', tank: 45, type: 'Small SUV', fuel: 'Petrol' },
+  // — Sedans & Hatches —
+  { id: 'toyota-camry', name: 'Toyota Camry', tank: 50, type: 'Sedan', fuel: 'Petrol/Hybrid' },
+  { id: 'toyota-corolla', name: 'Toyota Corolla', tank: 43, type: 'Hatchback', fuel: 'Petrol/Hybrid' },
+  { id: 'hyundai-i30', name: 'Hyundai i30', tank: 50, type: 'Hatchback', fuel: 'Petrol' },
+  { id: 'mazda-3', name: 'Mazda 3', tank: 51, type: 'Hatchback', fuel: 'Petrol' },
+  { id: 'kia-cerato', name: 'Kia Cerato', tank: 50, type: 'Sedan', fuel: 'Petrol' },
+  { id: 'toyota-yaris', name: 'Toyota Yaris', tank: 36, type: 'Hatchback', fuel: 'Petrol/Hybrid' },
+  { id: 'suzuki-swift', name: 'Suzuki Swift', tank: 37, type: 'Hatchback', fuel: 'Petrol/Hybrid' },
+  { id: 'mazda-2', name: 'Mazda 2', tank: 44, type: 'Hatchback', fuel: 'Petrol' },
+  { id: 'mg-3', name: 'MG 3', tank: 41, type: 'Hatchback', fuel: 'Petrol/Hybrid' },
+  { id: 'volkswagen-golf', name: 'Volkswagen Golf', tank: 50, type: 'Hatchback', fuel: 'Petrol' },
+  // — People Movers & Others —
+  { id: 'kia-carnival', name: 'Kia Carnival', tank: 72, type: 'People Mover', fuel: 'Diesel' },
+  { id: 'toyota-kluger', name: 'Toyota Kluger', tank: 65, type: 'Large SUV', fuel: 'Petrol/Hybrid' },
+  { id: 'tesla-model-3', name: 'Tesla Model 3', tank: 0, type: 'Sedan', fuel: 'Electric ⚡' },
+  { id: 'byd-atto-3', name: 'BYD Atto 3', tank: 0, type: 'Small SUV', fuel: 'Electric ⚡' },
+];
 
 const ITEMS = [
   { emoji: "🦞", name: "Two Live Lobsters", desc: "From the fish market. You could be hosting a seafood feast, but instead you're idling at the bowser.", price: 95, tags: ["food"] },
@@ -329,6 +418,91 @@ const ITEMS = [
   { emoji: "🎿", name: "A Day of Ski Lessons", desc: "Group lesson, lift pass, equipment rental. Learn to shred powder. Instead, your wallet got shredded.", price: 155, tags: ["experience"] },
   { emoji: "🌿", name: "A Balcony Garden Makeover", desc: "Planters, potting mix, herbs, flowers, a small trellis. Transform your space. The only transformation today was your bank balance.", price: 156, tags: ["home"] },
   { emoji: "🎵", name: "A Year of Spotify Family", desc: "Six accounts, unlimited music, no ads, for 12 months. A year of joy — or a single trip to the bowser.", price: 156, tags: ["entertainment"] },
+  // --- $161–$175 range (Kluger 65L, Pajero Sport 68L) ---
+  { emoji: "🎸", name: "A Guitar Amp", desc: "15-watt tube amp. Warm tones, bedroom-friendly volume. The only thing that should be overdriven is your guitar, not your fuel bill.", price: 162, tags: ["hobby"] },
+  { emoji: "🧳", name: "Two Nights in a Boutique Hotel", desc: "King bed, rooftop pool, breakfast included. A whole mini-break for the price of filling the tank.", price: 163, tags: ["experience"] },
+  { emoji: "🍷", name: "A Wine Fridge", desc: "12-bottle, dual zone, LED display. Store wine properly for years. Your fuel is gone by Tuesday.", price: 165, tags: ["home"] },
+  { emoji: "🎒", name: "A Camping Gear Bundle", desc: "Two-person tent, sleeping bags, head torch, camp stove. A whole weekend off-grid — ironic, given what you just paid at the grid.", price: 164, tags: ["hobby"] },
+  { emoji: "🦷", name: "Teeth Whitening Treatment", desc: "Professional-grade, lasts a year. A brighter smile. Instead, the only bright thing was the pump display.", price: 161, tags: ["wellness"] },
+  { emoji: "🎭", name: "A Night at the Opera", desc: "Two premium seats, programme, interval champagne. Culture that lasts in your memory. Fuel that lasts till Thursday.", price: 166, tags: ["experience"] },
+  { emoji: "🧸", name: "A Giant LEGO Technic Set", desc: "1,500+ pieces, working gears, months of building. The only thing that should be complex is the build, not your fuel bill.", price: 168, tags: ["hobby"] },
+  { emoji: "🐕", name: "A Year of Pet Insurance", desc: "12 months of coverage for your furry mate. Peace of mind, or one tank of diesel. Choose wisely.", price: 167, tags: ["pets"] },
+  { emoji: "🎧", name: "Premium Wireless Headphones", desc: "Sony or Bose, 30-hour battery, ANC. Block out the world — starting with the price of fuel.", price: 170, tags: ["tech"] },
+  { emoji: "🏄", name: "A Surfboard", desc: "New soft-top, 7-foot, catches everything. Endless free sessions at the beach. Your ute just caught a $170 bill.", price: 170, tags: ["hobby"] },
+  { emoji: "🍰", name: "A Patisserie Course", desc: "Eight weeks of croissants, éclairs, and tarts. Skills for life. Instead, skills at tapping your card at the bowser.", price: 172, tags: ["experience"] },
+  { emoji: "👟", name: "Two Pairs of Running Shoes", desc: "One for road, one for trail. Set for a year of running. Instead, you're set for about 800km of driving.", price: 173, tags: ["fashion"] },
+  { emoji: "🖥️", name: "A 27-Inch Monitor", desc: "4K, USB-C, adjustable stand. Transform your workspace. The only thing transformed today was diesel into sadness.", price: 175, tags: ["tech"] },
+  { emoji: "🧘", name: "A 10-Class Yoga Pass", desc: "Two months of downward dogs and inner peace. Instead, you're at the servo in the upward-paying position.", price: 174, tags: ["wellness"] },
+  // --- $176–$195 range (Kia Carnival 72L, Triton 75L, BT-50/D-Max 76L) ---
+  { emoji: "🏡", name: "A Fence Panel & Installation", desc: "One full panel replaced. Keep the dog in, keep the neighbours out. Your fuel just kept on leaking out.", price: 178, tags: ["home"] },
+  { emoji: "🎓", name: "A Professional Certification", desc: "Google, AWS, or HubSpot certified. Career advancement. Instead, you advanced to the next price tier at the servo.", price: 176, tags: ["experience"] },
+  { emoji: "🧑‍🍳", name: "A Kitchen Knife Set", desc: "Japanese steel, 5-piece block. Sharp enough to cut through anything — except the pain of fuel prices.", price: 180, tags: ["home"] },
+  { emoji: "📸", name: "A Photo Printer", desc: "Instant prints at home, borderless, gallery quality. Capture moments forever. Your fuel captured $180 for a week.", price: 179, tags: ["tech"] },
+  { emoji: "🎣", name: "A Full-Day Fishing Charter", desc: "Eight hours offshore, crew, bait, rods, lunch included. A day you'd remember. The servo? Not so much.", price: 182, tags: ["experience"] },
+  { emoji: "🛏️", name: "A Memory Foam Mattress Topper", desc: "Queen-size, 8cm thick, bamboo cover. Better sleep for years. Instead, you'll lose sleep over the fuel bill.", price: 183, tags: ["home"] },
+  { emoji: "🎤", name: "Two Concert Tickets", desc: "Standing room, live music, actual memories. Instead, the only standing you did was at pump 7.", price: 185, tags: ["experience"] },
+  { emoji: "🏋️", name: "A Home Gym Starter Kit", desc: "Kettlebell set, resistance bands, pull-up bar, yoga mat. Work out for years. Your ute worked out your wallet today.", price: 184, tags: ["hobby"] },
+  { emoji: "🐈", name: "A Year of Cat Food", desc: "Premium brand, wet and dry mix, 12 months. Your cat eats well for a year, or your ute eats for a week.", price: 186, tags: ["pets"] },
+  { emoji: "🎮", name: "A Nintendo Switch Game Bundle", desc: "Console not included, but three AAA games is 200+ hours of entertainment. Your tank gives you about 10 hours of driving.", price: 188, tags: ["entertainment"] },
+  { emoji: "🧥", name: "A Designer Winter Coat", desc: "The kind that lasts a decade. Warm, stylish, investment piece. Your diesel is an investment in getting to work. Barely.", price: 190, tags: ["fashion"] },
+  { emoji: "🎢", name: "Four Theme Park Tickets", desc: "A full family day — rides, shows, overpriced fairy floss. Still better value than filling the tank.", price: 189, tags: ["kids"] },
+  { emoji: "🏊", name: "A Family Pool Pass", desc: "12 months of unlimited swims for the whole family. Or one trip to the diesel pump. The choice was made for you.", price: 192, tags: ["kids"] },
+  { emoji: "🛋️", name: "An Armchair", desc: "A proper reading chair. Velvet, lumbar support, a place to contemplate life choices. Like filling an 80L tank.", price: 195, tags: ["home"] },
+  { emoji: "🧬", name: "A Comprehensive Health Panel", desc: "Full blood work, hormone panel, vitamin levels, GP consultation. Know your body. Your ute only knows your EFTPOS.", price: 193, tags: ["wellness"] },
+  { emoji: "🎻", name: "A Violin + Lessons", desc: "Student violin plus four beginner lessons. Months of learning. Your diesel lasted roughly to next Wednesday.", price: 191, tags: ["hobby"] },
+  // --- $196–$215 range (Ranger, HiLux, Everest, Prado, Navara 80L) ---
+  { emoji: "📱", name: "A Refurbished iPhone", desc: "Previous gen, works perfectly, does everything. Instead, the only thing you're tapping is your card at the bowser.", price: 199, tags: ["tech"] },
+  { emoji: "🍖", name: "A Whole Lamb", desc: "Butchered and packed, feeds a family for months. Your 80 litres of diesel feeds a turbo for about 900km.", price: 200, tags: ["food"] },
+  { emoji: "🏠", name: "A Dyson Vacuum", desc: "Cordless, powerful, lasts years. The only thing that should suck this hard is the vacuum, not the fuel bill.", price: 198, tags: ["home"] },
+  { emoji: "🎿", name: "A Weekend Ski Trip", desc: "Two nights, two days of lift passes. Powder, views, après-ski. Instead, you got a diesel receipt and a sigh.", price: 202, tags: ["experience"] },
+  { emoji: "🧳", name: "Return Flights to Sydney", desc: "Brisbane to Sydney and back. A whole trip for the price of filling the tank. Let that sit with you.", price: 203, tags: ["experience"] },
+  { emoji: "🍕", name: "Pizza Night Every Friday for a Year", desc: "52 large pizzas. A weekly family tradition. Or one weekly diesel fill-up. The universe is cruel.", price: 197, tags: ["food"] },
+  { emoji: "💻", name: "A Chromebook", desc: "Brand new, does everything most people need. An actual computer. Instead, you computed how much diesel costs.", price: 205, tags: ["tech"] },
+  { emoji: "🧖", name: "A Spa Weekend for Two", desc: "Two nights, massages, facials, pool access. Total relaxation. Instead, total at the pump.", price: 204, tags: ["experience"] },
+  { emoji: "🎸", name: "An Electric Guitar + Amp", desc: "Squier Strat and a practice amp. Everything to start a band. Instead, everything to start a direct debit to Shell.", price: 208, tags: ["hobby"] },
+  { emoji: "🐶", name: "A Puppy Starter Kit", desc: "Bed, crate, bowls, toys, treats, collar, lead, vet check. Everything for a new family member. Instead, 80 litres.", price: 210, tags: ["pets"] },
+  { emoji: "🎂", name: "A Professional Wedding Cake Tasting", desc: "Six flavours, two consultations, a dream cake plan. Or one tank of diesel. Romance is dead.", price: 207, tags: ["food"] },
+  { emoji: "🧱", name: "The Biggest LEGO Set You've Seen", desc: "3,000+ pieces. Star Destroyer, Hogwarts, Eiffel Tower. A month of building. One tank of driving.", price: 212, tags: ["hobby"] },
+  { emoji: "🌊", name: "A Scuba Diving Course", desc: "Open water certification. Four pool sessions, two ocean dives, a licence for life. Instead, a licence to pay $200 at the pump.", price: 213, tags: ["experience"] },
+  { emoji: "🪑", name: "A Standing Desk", desc: "Electric, height-adjustable, solid top. Improve your posture for years. Your posture at the bowser? Defeated.", price: 215, tags: ["home"] },
+  { emoji: "🎤", name: "A Sound System", desc: "Bluetooth speaker, subwoofer, bookshelf pair. Fill your house with music. Instead, you filled your ute with diesel.", price: 196, tags: ["tech"] },
+  // --- $216–$240 range (buffer for price fluctuations on 80L tanks) ---
+  { emoji: "🛶", name: "An Inflatable Kayak", desc: "Two-person, paddles included, fits in a bag. Explore rivers for years. Your diesel explored the bottom of the tank in a week.", price: 220, tags: ["hobby"] },
+  { emoji: "🎓", name: "A University Short Course", desc: "Six-week online course from an actual university. A credential that lasts forever. Fuel that lasts till Tuesday.", price: 218, tags: ["experience"] },
+  { emoji: "🧑‍🍳", name: "A Premium BBQ Set", desc: "Tongs, spatula, thermometer, smoking chips, apron. The ultimate grill kit. Instead, the ultimate bill.", price: 216, tags: ["home"] },
+  { emoji: "📷", name: "An Instant Camera + Film", desc: "Instax Wide, plus 100 shots. Two years of captured memories. Instead, one captured wallet.", price: 222, tags: ["hobby"] },
+  { emoji: "🎭", name: "Season Theatre Tickets", desc: "Four shows across the year. Drama, comedy, musical, Shakespeare. Culture. Instead, a Caltex receipt.", price: 225, tags: ["experience"] },
+  { emoji: "🧳", name: "A Samsonite Suitcase", desc: "Hard shell, 75L, spinner wheels, TSA lock. Travel the world. Instead, you travelled to the servo and back.", price: 228, tags: ["fashion"] },
+  { emoji: "🏄‍♂️", name: "A Wetsuit + Surfboard Combo", desc: "Everything you need to surf for years. Zero fuel required. Maximum stoke. Minimum wallet damage — unlike today.", price: 230, tags: ["hobby"] },
+  { emoji: "🎮", name: "A Gaming Console", desc: "A brand-new Xbox or PlayStation. Years of entertainment, thousands of hours. Or 80 litres of diesel. You chose diesel.", price: 235, tags: ["entertainment"] },
+  { emoji: "🐕", name: "Professional Dog Training", desc: "12-week behavioural course with a certified trainer. A well-mannered dog for life. Instead, a well-fed ute for a week.", price: 232, tags: ["pets"] },
+  { emoji: "🍷", name: "A Wine Tour Weekend", desc: "Two people, five wineries, lunch, accommodation, designated driver. Instead, you were the driver. At the servo.", price: 238, tags: ["experience"] },
+  { emoji: "🛏️", name: "A New Mattress", desc: "Queen-size, medium firm, 10-year warranty. 3,650 nights of better sleep. Your diesel gave you about 10 days of transport.", price: 240, tags: ["home"] },
+  { emoji: "🎹", name: "A Digital Piano", desc: "88 weighted keys, built-in speakers, headphone jack. Learn Chopin. Instead, you learned the price of diesel.", price: 236, tags: ["hobby"] },
+  { emoji: "🧊", name: "A Chest Freezer Full of Meat", desc: "The freezer AND a bulk meat pack. Fed for six months. Instead, a single tank fed to the engine.", price: 224, tags: ["food"] },
+  { emoji: "🏋️‍♀️", name: "An Olympic Barbell Set", desc: "Bar, bumper plates, clips. A home gym foundation. Heavy lifting for years. The only heavy thing today was the fuel bill.", price: 226, tags: ["hobby"] },
+  // --- $241–$280 range (LandCruiser 110L) ---
+  { emoji: "🏖️", name: "A Weekend at a Beach Resort", desc: "Two nights, ocean view, buffet breakfast, pool. A proper holiday. Instead, 110 litres of diesel and a long drive home.", price: 245, tags: ["experience"] },
+  { emoji: "🚴", name: "A Proper Road Bike", desc: "Aluminium frame, Shimano gears, drop bars. Commute for free, forever. Instead, you committed to $250 at the bowser.", price: 250, tags: ["hobby"] },
+  { emoji: "💻", name: "A Refurbished MacBook", desc: "Previous gen, runs everything, lasts years. An actual productivity machine. Instead, your LandCruiser consumed $250.", price: 248, tags: ["tech"] },
+  { emoji: "🛋️", name: "A Leather Recliner", desc: "The big one. USB port, cup holder, footrest. Watch the footy in luxury. Instead, watch the pump tick past $250.", price: 252, tags: ["home"] },
+  { emoji: "🎿", name: "A Full Ski Season Pass", desc: "Unlimited days on the mountain. An entire winter of snow. Instead, one trip to the diesel pump. That's it.", price: 255, tags: ["experience"] },
+  { emoji: "🍽️", name: "Fine Dining for Four", desc: "A degustation — 10 courses, wine pairings, a night to remember. Instead, you'll remember the pump hitting $255.", price: 255, tags: ["food"] },
+  { emoji: "🧳", name: "Return Flights to Melbourne", desc: "Two people, Brisbane to Melbourne and back. A whole trip. Instead, your LandCruiser's weekly ritual.", price: 258, tags: ["experience"] },
+  { emoji: "📱", name: "An iPad Air", desc: "Brand new, M-series chip, 256GB. A creative powerhouse. Instead, you powered 110 litres into a V8.", price: 260, tags: ["tech"] },
+  { emoji: "🐕", name: "A Year of Doggy Daycare", desc: "One day a week, 52 weeks. Your dog socialises, you work guilt-free. Or one tank of diesel. One.", price: 262, tags: ["pets"] },
+  { emoji: "🏠", name: "A Robot Mower", desc: "Set it and forget it. A perfectly manicured lawn, every week, forever. Instead, a perfectly emptied tank, every week, forever.", price: 265, tags: ["home"] },
+  { emoji: "🎮", name: "A VR Headset", desc: "Meta Quest, standalone, hundreds of games. Escape reality. Instead, reality hit you at the bowser for $270.", price: 270, tags: ["tech"] },
+  { emoji: "🧖‍♀️", name: "A Luxury Spa Retreat", desc: "Two nights, hot springs, massage package, gourmet meals. Total renewal. Instead, total spent: $270 on diesel.", price: 268, tags: ["experience"] },
+  { emoji: "🍖", name: "A Whole Beef Side", desc: "100kg of beef, butchered and packed. Steaks, mince, roasts for a year. Your LandCruiser ate the equivalent in one sitting.", price: 275, tags: ["food"] },
+  { emoji: "🎸", name: "A Fender Guitar", desc: "The real deal. A Player Series Telecaster. A guitar you keep for life. Instead, 110 litres of temporary diesel.", price: 278, tags: ["hobby"] },
+  { emoji: "🏡", name: "A Full Garden Makeover", desc: "Plants, mulch, pavers, a small water feature. Transform your backyard. The only thing that transformed today was diesel into CO₂.", price: 280, tags: ["home"] },
+  { emoji: "🎓", name: "A TAFE Short Course", desc: "Barista, welding, coding, photography — pick a new skill. Career-changing. The only change today was at the pump.", price: 272, tags: ["experience"] },
+  { emoji: "👜", name: "A Designer Handbag", desc: "The kind you save up for. Leather, timeless, an heirloom piece. Instead, you spent the same on diesel. Twice this month.", price: 276, tags: ["fashion"] },
+  { emoji: "🛶", name: "A Stand-Up Paddleboard", desc: "Inflatable, pump, paddle, bag. Years of weekends on the water. Your LandCruiser's tank holds 110 litres. So does the ocean. Only one costs $280.", price: 280, tags: ["hobby"] },
+  { emoji: "🎵", name: "Front Row Concert Tickets", desc: "Two tickets, premium section, face-melting proximity to the stage. Instead, face-melting proximity to the price display.", price: 242, tags: ["experience"] },
+  { emoji: "🏕️", name: "A Full Camping Setup", desc: "Tent, swags, camp kitchen, chairs, lantern, esky. Everything for a family camping trip. Instead, everything went to diesel.", price: 248, tags: ["hobby"] },
+  { emoji: "🧹", name: "A Dyson Airwrap", desc: "The hairstyling tool everyone wants. Curls, waves, smooth for years. The only thing smooth today was how fast the pump drained your account.", price: 244, tags: ["home"] },
 ];
 
 function getDayOfYear(d) { const start = new Date(d.getFullYear(), 0, 0); return Math.floor((d - start) / 864e5); }
@@ -349,19 +523,103 @@ function pickItem(dayOffset, priceCents) {
 function $(id) { return document.getElementById(id); }
 function fmtDollars(n) { return '$' + n.toLocaleString('en-AU', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
 
+// --- Car selector ---
+function getCarById(id) { return CARS.find(c => c.id === id) || CARS.find(c => c.id === 'toyota-camry'); }
+
+function loadSavedCar() {
+  try { const saved = localStorage.getItem('frc_car'); if (saved && CARS.find(c => c.id === saved)) return saved; } catch {}
+  return 'toyota-camry';
+}
+
+function saveCar(id) { try { localStorage.setItem('frc_car', id); } catch {} }
+
+function getCarLabel(car) {
+  const article = /^[aeiou]/i.test(car.name) ? 'an' : 'a';
+  return `${article} ${car.name}`;
+}
+
+function renderCarGrid(filter) {
+  const grid = $('carGrid');
+  const q = (filter || '').toLowerCase().trim();
+  const filtered = q ? CARS.filter(c => c.name.toLowerCase().includes(q) || c.type.toLowerCase().includes(q) || c.fuel.toLowerCase().includes(q)) : CARS;
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="car-no-results">No cars found — try a different search</div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map(c => {
+    const isEV = c.tank === 0;
+    const meta = isEV ? `${c.type} · ${c.fuel}` : `${c.type} · ${c.tank}L`;
+    return `<div class="car-option${c.id === SELECTED_CAR ? ' selected' : ''}" data-id="${c.id}" onclick="selectCar('${c.id}')">
+      <span class="car-name">${c.name}</span>
+      <span class="car-meta">${meta}</span>
+    </div>`;
+  }).join('');
+}
+
+function toggleCarDropdown(e) {
+  if (e) e.stopPropagation();
+  const dropdown = $('carDropdown');
+  const trigger = $('carTrigger');
+  const isOpen = dropdown.classList.toggle('open');
+  trigger.classList.toggle('open', isOpen);
+  if (isOpen) { renderCarGrid(); $('carSearch').value = ''; setTimeout(() => { $('carSearch').focus(); const sel = $('carGrid').querySelector('.selected'); if (sel) sel.scrollIntoView({ block: 'center' }); }, 50); }
+}
+
+function closeCarDropdown() {
+  $('carDropdown').classList.remove('open');
+  $('carTrigger').classList.remove('open');
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(e) {
+  const wrap = $('carDropdownWrap');
+  if (wrap && !wrap.contains(e.target)) closeCarDropdown();
+});
+
+// Prevent clicks inside dropdown from closing it
+document.addEventListener('DOMContentLoaded', function() {
+  $('carDropdown').addEventListener('click', function(e) { e.stopPropagation(); });
+});
+
+function filterCars() { renderCarGrid($('carSearch').value); }
+
+function selectCar(id) {
+  const car = getCarById(id);
+  if (car.tank === 0) {
+    const opt = $('carGrid').querySelector(`[data-id="${id}"]`);
+    if (opt) {
+      const orig = opt.innerHTML;
+      opt.innerHTML = '<span class="car-name" style="color:var(--green)">Nice try 😏</span><span class="car-meta" style="color:var(--green)">No fuel needed</span>';
+      setTimeout(() => { opt.innerHTML = orig; }, 2200);
+    }
+    return;
+  }
+  SELECTED_CAR = id;
+  TANK_LITRES = car.tank;
+  saveCar(id);
+  closeCarDropdown();
+  if (window._lastPriceCents) renderPage(window._lastPriceCents, window._lastSource);
+}
+
 async function fetchLivePrice() {
   if (!WORKER_URL) return null;
   try { const r = await fetch(WORKER_URL, { signal: AbortSignal.timeout(4000) }); const d = await r.json(); if (d.price_cents_per_litre) return { cents: d.price_cents_per_litre, source: d.source || 'live' }; return null; } catch { return null; }
 }
 
-async function init() {
+function renderPage(priceCents, source) {
+  window._lastPriceCents = priceCents;
+  window._lastSource = source;
   const today = new Date();
-  const liveData = await fetchLivePrice();
-  let priceCents = liveData ? liveData.cents : null;
-  let source = liveData ? liveData.source : 'simulated';
-  if (!priceCents) { priceCents = simPrice(0); source = 'simulated'; }
+  const car = getCarById(SELECTED_CAR);
   const pricePerLitre = priceCents / 100;
   const fillCost = pricePerLitre * TANK_LITRES;
+
+  // Update car labels
+  $('heroCarLabel').textContent = getCarLabel(car);
+  $('heroTankLabel').textContent = `${car.tank} litres`;
+  $('footerCarLabel').textContent = `${car.name} (${car.tank}L)`;
 
   $('liveDate').textContent = today.toLocaleDateString('en-AU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
@@ -398,15 +656,30 @@ async function init() {
   }
 }
 
+async function init() {
+  // Load saved car preference
+  SELECTED_CAR = loadSavedCar();
+  const car = getCarById(SELECTED_CAR);
+  TANK_LITRES = car.tank;
+
+  const liveData = await fetchLivePrice();
+  let priceCents = liveData ? liveData.cents : null;
+  let source = liveData ? liveData.source : 'simulated';
+  if (!priceCents) { priceCents = simPrice(0); source = 'simulated'; }
+
+  renderPage(priceCents, source);
+}
+
 function getShareText() {
+  const car = getCarById(SELECTED_CAR);
   const name = $('todayName').textContent;
   const price = $('heroPrice').textContent;
   const doy = getDayOfYear(new Date());
   const variants = [
-    `${price} to fill a Toyota Camry today.\n\nFor that money I could've bought ${name.toLowerCase()}.\n\nThis country is cooked. ⛽🔥`,
-    `Filled up the car today. ${price}.\n\nYou know what else costs that? ${name}.\n\nLet that sink in. ⛽`,
+    `${price} to fill ${getCarLabel(car)} today.\n\nFor that money I could've bought ${name.toLowerCase()}.\n\nThis country is cooked. ⛽🔥`,
+    `Filled up the ${car.name} today. ${price}.\n\nYou know what else costs that? ${name}.\n\nLet that sink in. ⛽`,
     `POV: You spend ${price} on fuel and realise you could've had ${name.toLowerCase()} instead.\n\nEvery. Single. Week. ⛽💸`,
-    `${price}. That's what it costs to fill a Camry right now.\n\nOr… you could buy ${name.toLowerCase()}.\n\nChoose your fighter. ⛽`,
+    `${price}. That's what it costs to fill a ${car.name} right now.\n\nOr… you could buy ${name.toLowerCase()}.\n\nChoose your fighter. ⛽`,
   ];
   return variants[doy % variants.length];
 }
